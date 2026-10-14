@@ -284,7 +284,15 @@ app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet, noimageindex');
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+
+  // Allow PWA icons, manifest, and favicons to be cached so Android launcher & WebAPK installer can load them
+  if (p.endsWith('.png') || p.endsWith('.ico') || p.endsWith('.svg') || p.endsWith('.jpg') || p.endsWith('.webp')) {
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+  } else if (p === '/manifest.json' || p === '/sw.js') {
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+  } else {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  }
   next();
 });
 
