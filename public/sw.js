@@ -1,5 +1,5 @@
-// Symmetry PWA Service Worker
-const CACHE_NAME = 'symmetry-biomech-v2';
+// Symmetyr PWA Service Worker
+const CACHE_NAME = 'symmetyr-biomech-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

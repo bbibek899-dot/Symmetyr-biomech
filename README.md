@@ -1,6 +1,6 @@
-# Symmetry - AI Biomechanical Posture, Clinical Gait & Muscle Compensation Analysis
+# Symmetyr - AI Biomechanical Posture, Clinical Gait & Muscle Compensation Analysis
 
-**Symmetry** is a clinical-grade, browser-based biomechanical movement analysis platform powered by Google MediaPipe Tasks Vision and WebAssembly. It provides real-time posture screening, kinematic angle tracking, muscle compensation diagnosis, and clinical gait analysis (Stance Phase, Swing Phase, Heel Off, and Toe Off) directly from mobile and desktop web browsers without external hardware.
+**Symmetyr** is a clinical-grade, browser-based biomechanical movement analysis platform powered by Google MediaPipe Tasks Vision and WebAssembly. It provides real-time posture screening, kinematic angle tracking, muscle compensation diagnosis, and clinical gait analysis (Stance Phase, Swing Phase, Heel Off, and Toe Off) directly from mobile and desktop web browsers without external hardware.
 
 ---
 
@@ -70,14 +70,16 @@ Anyone can open this URL directly on mobile Chrome, Safari, or desktop browsers 
 * Your teachers, friends, or examiners **do not need access to your GitHub repository** to use the application. They can test posture analysis, gait tracking, and generate PDF reports directly on their phones or laptops from the link.
 * Making your GitHub repository **Private** protects your source code so no one else can view or copy it.
 
-### 3. How to Make a Repository Private on GitHub
-1. Log into your GitHub account at `github.com`.
-2. Click the **`+`** icon in the top right corner → **New repository** (or go to `github.com/new`).
-3. Enter a repository name (e.g. `symmetry-biomechanics`).
-4. Under **Choose visibility**, select **🔒 Private**.
-5. Click **Create repository**.
-6. Upload the project files (`index.html`, `manifest.json`, `icon.svg`, `sw.js`, `README.md`).
-7. Only you have access to your code!
+### 3. How to Push or Upload to GitHub (`bbibek899/Symmetryr-biomech`)
+* **Option A (Automated Git Push from In-App Owner Studio)**:
+  1. Open the app, tap **Owner** (or triple-click the Symmetyr logo) and enter passcode `bibek2026` or `899` or `symmetyr`.
+  2. Open the direct token page: `https://github.com/settings/tokens/new?scopes=repo&description=Symmetyr-Biomech`
+  3. Scroll down and click **Generate token**.
+  4. Paste your token and click **Push App to GitHub Now**!
+* **Option B (Zero Token Drag & Drop)**:
+  1. Download `symmetyr-clinical-source.zip` from the Owner Studio.
+  2. Go to your repository `https://github.com/bbibek899/Symmetryr-biomech`.
+  3. Click **uploading an existing file**, drag the unzipped files, and commit changes.
 
 ### 4. Install to Mobile Home Screen (App Icon)
 * **Android (Chrome)**: Tap the 3 dots menu `⋮` → **Install App** or **Add to Home screen**.

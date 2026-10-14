@@ -98,7 +98,7 @@ app.post('/api/upload-image', (req, res) => {
 // Allows authorized owner (Bibek) to unlock code, view files,
 // export source ZIP, and push to GitHub repository
 // ==============================================================
-const OWNER_PASSCODES = ['bibek2026', '899', 'bbibek899', 'symmetry2026'];
+const OWNER_PASSCODES = ['bibek2026', '899', 'bbibek899', 'symmetyr', 'symmetyr2026', 'symmetry', 'symmetry2026'];
 
 function isAuthorizedOwner(req: express.Request): boolean {
   const token = (req.headers['x-owner-token'] || req.query.token || req.body?.ownerKey || '') as string;
@@ -121,7 +121,7 @@ app.get('/api/owner/export-source', (req, res) => {
   }
 
   res.setHeader('Content-Type', 'application/zip');
-  res.setHeader('Content-Disposition', 'attachment; filename="symmetry-clinical-source.zip"');
+  res.setHeader('Content-Disposition', 'attachment; filename="symmetyr-clinical-source.zip"');
 
   const archive = archiver('zip', { zlib: { level: 9 } });
 
@@ -217,7 +217,7 @@ app.post('/api/owner/push-github', async (req, res) => {
     
     // Commit any latest code
     try {
-      await execPromise('git add . && git commit -m "Update Symmetry Clinical Suite"');
+      await execPromise('git add . && git commit -m "Update Symmetyr Clinical Suite"');
     } catch (_) {}
 
     // Push to GitHub
@@ -228,7 +228,7 @@ app.post('/api/owner/push-github', async (req, res) => {
 
     return res.json({
       success: true,
-      message: `Successfully pushed Symmetry Clinical Suite to https://github.com/${cleanRepo}!`,
+      message: `Successfully pushed Symmetyr Clinical Suite to https://github.com/${cleanRepo}!`,
       output: stdout || stderr || 'Push completed successfully.'
     });
   } catch (err: any) {
@@ -271,7 +271,7 @@ app.use((req, res, next) => {
 
   const isBlockedAgent = blockedAgents.some(agent => userAgent.includes(agent));
   if (isBlockedAgent) {
-    return res.status(403).type('text/plain').send('403 Forbidden: Automated harvesting, AI crawlers, and scrapers are strictly blocked by Symmetry Security Shield.');
+    return res.status(403).type('text/plain').send('403 Forbidden: Automated harvesting, AI crawlers, and scrapers are strictly blocked by Symmetyr Security Shield.');
   }
 
   // Block any attempt to request source files, configurations, backups, or git metadata
@@ -311,5 +311,5 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`[Server] Symmetry App listening on http://0.0.0.0:${PORT}`);
+  console.log(`[Server] Symmetyr App listening on http://0.0.0.0:${PORT}`);
 });

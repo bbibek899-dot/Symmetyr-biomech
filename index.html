@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Symmetry - Clinical Biomechanical Posture, 5-Phase Gait & ROM Goniometry</title>
+<title>Symmetyr - Clinical Biomechanical Posture, 5-Phase Gait & ROM Goniometry</title>
 
 <!-- PWA Manifest & App Icons -->
 <link rel="manifest" href="/manifest.json">
@@ -17,8 +17,8 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
-<meta name="apple-mobile-web-app-title" content="Symmetry">
-<meta name="application-name" content="Symmetry">
+<meta name="apple-mobile-web-app-title" content="Symmetyr">
+<meta name="application-name" content="Symmetyr">
 
 <style>
 :root{
@@ -812,9 +812,9 @@ header .brand span{color:var(--g)}
 <div id="app">
   <!-- Top App Navigation & Global Header -->
   <header>
-    <div class="brand" id="brand-logo" title="Symmetry Clinical Suite (Triple-click or press Alt+O for Owner Studio)" style="cursor:pointer;">
+    <div class="brand" id="brand-logo" title="Symmetyr Clinical Suite (Triple-click or press Alt+O for Owner Studio)" style="cursor:pointer;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-      Symmetry <span>AI</span>
+      Symmetyr <span>AI</span>
       <span class="clinical-badge">Clinical Suite</span>
     </div>
 
@@ -859,7 +859,7 @@ header .brand span{color:var(--g)}
         <span>🔑</span> Owner
       </button>
 
-      <button class="icon-btn" id="install-app-btn" title="Install Symmetry App to Phone Home Screen" style="border-color:rgba(0,229,255,0.45);color:var(--cyan);background:rgba(0,229,255,0.08);">
+      <button class="icon-btn" id="install-app-btn" title="Install Symmetyr App to Phone Home Screen" style="border-color:rgba(0,229,255,0.45);color:var(--cyan);background:rgba(0,229,255,0.08);">
         <span>📲</span> Install App
       </button>
 
@@ -1176,7 +1176,7 @@ header .brand span{color:var(--g)}
 <!-- ============================================================== -->
 <div id="github-modal" class="modal-backdrop">
   <div class="card" style="max-width:620px;">
-    <h3>🔗 Share Symmetry Clinical App</h3>
+    <h3>🔗 Share Symmetyr Clinical App</h3>
     <div class="card-body" style="font-size:12.5px;line-height:1.6;color:#d5e2f0;display:flex;flex-direction:column;gap:14px;">
       
       <!-- Live Web Link -->
@@ -1210,7 +1210,7 @@ header .brand span{color:var(--g)}
       <!-- Home Screen Install Shortcut -->
       <div style="background:#0f1722;padding:12px 14px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
         <div>
-          <b style="color:#fff;font-size:12.5px;">Want to install Symmetry to your phone?</b>
+          <b style="color:#fff;font-size:12.5px;">Want to install Symmetyr to your phone?</b>
           <div style="font-size:11.5px;color:var(--mut);">Add as a full-screen app on iOS &amp; Android with app icon.</div>
         </div>
         <button id="share-modal-open-install" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">
@@ -1311,8 +1311,32 @@ header .brand span{color:var(--g)}
             <span>💡</span> Is adding to GitHub necessary for your app to run?
           </div>
           <p style="margin:6px 0 0 0;font-size:12px;color:#c0d3e5;line-height:1.6;">
-            <b style="color:var(--g);">NO, it is NOT necessary at all!</b> Your Symmetry app is <b>already fully built, live, and running 24/7 on Google Cloud</b> (<span style="color:var(--cyan);font-family:monospace;">ais-pre-v36ev7ejomvg4o2rvkenh6...</span>). Anyone you give the link to can use the camera, posture tracker, 5-phase gait analysis, and generate PDF reports directly on iPhone, Android, or laptop without needing GitHub or logging in.
+            <b style="color:var(--g);">NO, it is NOT necessary at all!</b> Your Symmetyr app is <b>already fully built, live, and running 24/7 on Google Cloud</b> (<span style="color:var(--cyan);font-family:monospace;">ais-pre-v36ev7ejomvg4o2rvkenh6...</span>). Anyone you give the link to can use the camera, posture tracker, 5-phase gait analysis, and generate PDF reports directly on iPhone, Android, or laptop without needing GitHub or logging in.
           </p>
+        </div>
+
+        <!-- Where to Find GitHub Token (Direct 1-Click Guide) -->
+        <div style="background:#131c28;padding:14px;border-radius:10px;border:1px solid rgba(0,229,255,0.35);display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:13px;font-weight:800;color:var(--cyan);display:flex;align-items:center;gap:6px;">
+            <span>🔑</span> Where is the GitHub Token? (Why you couldn't find it)
+          </div>
+          <p style="margin:0;font-size:12px;color:#c8dbec;line-height:1.5;">
+            Personal Access Tokens are <b>NOT inside your repository or repository settings</b>. They belong to your <b>personal GitHub Account Settings</b> (Developer Settings).
+          </p>
+          <div style="background:#0a1017;padding:12px;border-radius:8px;border:1px solid var(--border);display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:12px;font-weight:700;color:#ffd700;">
+              ✨ Easiest 1-Tap Solution (Pre-Filled with 'repo' scope):
+            </div>
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=Symmetyr-Biomech" target="_blank" style="background:var(--cyan);color:#002633;font-weight:800;font-size:12.5px;padding:9px 16px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;width:fit-content;">
+              <span>🔑</span> 1-Click: Open GitHub Token Page
+            </a>
+            <ol style="margin:4px 0 0 18px;padding:0;font-size:11.5px;color:#a9bfd4;line-height:1.6;">
+              <li>Tap the cyan button above (opens GitHub with <b>repo</b> already selected).</li>
+              <li>Scroll to the bottom and click the green <b>Generate token</b> button.</li>
+              <li>Tap the copy icon next to your new token (starts with <code>ghp_...</code>).</li>
+              <li>Come back here, paste it into the box below, and tap <b>Push App to GitHub Now</b>!</li>
+            </ol>
+          </div>
         </div>
 
         <!-- Push to GitHub Automatically -->
@@ -1321,15 +1345,15 @@ header .brand span{color:var(--g)}
             <span>🚀</span> Option A: Automated Git Push from App
           </div>
           <div style="font-size:12px;color:var(--mut);line-height:1.5;">
-            GitHub requires authentication (either an OAuth app or Personal Access Token). Paste your repository name and Personal Access Token (PAT) below to push automatically:
+            Paste your repository name and Personal Access Token (PAT) below to push automatically:
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;">
             <div>
-              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:3px;">GitHub Repository (e.g. bbibek899/symmetry-biomechanics or https://github.com/bbibek899/symmetry-biomechanics):</label>
-              <input type="text" id="gh-repo-input" placeholder="bbibek899/symmetry-biomechanics" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;background:#060a0f;border:1px solid var(--border);color:#fff;font-size:12px;outline:none;">
+              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:3px;">GitHub Repository (e.g. bbibek899/Symmetryr-biomech):</label>
+              <input type="text" id="gh-repo-input" value="bbibek899/Symmetryr-biomech" placeholder="bbibek899/Symmetryr-biomech" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;background:#060a0f;border:1px solid var(--border);color:#fff;font-size:12px;outline:none;">
             </div>
             <div>
-              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:3px;">GitHub Personal Access Token (classic token with 'repo' scope from github.com/settings/tokens):</label>
+              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:3px;">GitHub Personal Access Token (starts with ghp_... from direct link above):</label>
               <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;background:#060a0f;border:1px solid var(--border);color:#fff;font-size:12px;outline:none;">
             </div>
             <button id="gh-push-btn" style="background:var(--cyan);color:#002433;font-weight:800;font-size:12.5px;padding:9px 16px;border-radius:6px;border:none;cursor:pointer;margin-top:4px;">
@@ -1342,12 +1366,12 @@ header .brand span{color:var(--g)}
         <!-- Option B: Manual Web Upload in 2 minutes -->
         <div style="background:#0c1219;padding:14px;border-radius:10px;border:1px solid var(--border);">
           <div style="font-size:13px;font-weight:700;color:var(--g);display:flex;align-items:center;gap:6px;">
-            <span>📦</span> Option B: Instant Drag &amp; Drop Upload (Easiest — No Token Needed)
+            <span>📦</span> Option B: Instant Drag &amp; Drop Upload (No Token Needed At All)
           </div>
           <ol style="margin:8px 0 0 18px;padding:0;font-size:12px;color:#b5cbe0;line-height:1.7;">
             <li>Click the <b>"Export Source ZIP"</b> tab above and tap <b>Download Source ZIP</b>.</li>
-            <li>Go to <a href="https://github.com/new" target="_blank" style="color:var(--cyan);font-weight:600;">github.com/new</a>, name it <code>symmetry-biomechanics</code>, and click <b>Create repository</b>.</li>
-            <li>Click <b>"uploading an existing file"</b>, drag the unzipped files into GitHub, and tap <b>Commit changes</b>. Done!</li>
+            <li>Go to your repository <a href="https://github.com/bbibek899/Symmetryr-biomech" target="_blank" style="color:var(--cyan);font-weight:600;">github.com/bbibek899/Symmetryr-biomech</a>.</li>
+            <li>Click <b>"uploading an existing file"</b>, drop the files into GitHub, and tap <b>Commit changes</b>. Done!</li>
           </ol>
         </div>
 
@@ -1358,10 +1382,10 @@ header .brand span{color:var(--g)}
         <div style="background:#101a26;padding:16px;border-radius:10px;border:1px solid rgba(0,229,255,0.3);">
           <b style="color:#fff;font-size:14px;">Download Full Clean Project ZIP Archive</b>
           <p style="margin:6px 0 14px 0;font-size:12px;color:var(--mut);line-height:1.5;">
-            Contains the entire clinical codebase: <code>index.html</code> (full UI, MediaPipe Pose tracking, 5-phase gait engine, ROM goniometry), <code>server.ts</code>, <code>package.json</code>, app manifest, and icons.
+            Contains the entire clinical codebase: <code>index.html</code> (full Symmetyr UI, MediaPipe Pose tracking, 5-phase gait engine, ROM goniometry), <code>server.ts</code>, <code>package.json</code>, app manifest, and icons.
           </p>
           <a id="owner-download-zip-link" href="#" style="background:var(--cyan);color:#002433;font-weight:800;font-size:13px;padding:10px 20px;border-radius:7px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
-            <span>📦</span> Download symmetry-clinical-source.zip
+            <span>📦</span> Download symmetyr-clinical-source.zip
           </a>
         </div>
       </div>
@@ -1395,14 +1419,14 @@ header .brand span{color:var(--g)}
 <!-- ============================================================== -->
 <div id="install-modal" class="modal-backdrop">
   <div class="card" style="max-width:600px;">
-    <h3>📲 Add Symmetry to Your Phone Home Screen</h3>
+    <h3>📲 Add Symmetyr to Your Phone Home Screen</h3>
     <div class="card-body" style="font-size:12.5px;line-height:1.6;color:#d5e2f0;display:flex;flex-direction:column;gap:12px;">
       
       <!-- Visual App Icon Preview -->
       <div style="display:flex;align-items:center;gap:14px;background:#101a26;padding:12px 14px;border-radius:10px;border:1px solid rgba(0,229,255,0.3);">
-        <img src="/icon-192.png" alt="Symmetry App Icon" style="width:64px;height:64px;border-radius:14px;box-shadow:0 4px 14px rgba(0,229,255,0.3);border:1px solid rgba(0,229,255,0.4);">
+        <img src="/icon-192.png" alt="Symmetyr App Icon" style="width:64px;height:64px;border-radius:14px;box-shadow:0 4px 14px rgba(0,229,255,0.3);border:1px solid rgba(0,229,255,0.4);">
         <div>
-          <div style="font-size:15px;font-weight:800;color:#fff;">Symmetry Biomechanics</div>
+          <div style="font-size:15px;font-weight:800;color:#fff;">Symmetyr Biomechanics</div>
           <div style="font-size:12px;color:var(--cyan);font-weight:600;">Clinical Posture, 5-Phase Gait &amp; ROM App</div>
           <div style="font-size:11px;color:var(--mut);">Full screen app experience with home screen icon</div>
         </div>
@@ -1412,10 +1436,10 @@ header .brand span{color:var(--g)}
       <div style="background:#182330;padding:12px 14px;border-radius:8px;border:1px solid var(--border);">
         <b style="color:var(--cyan);font-size:13px;">🤖 For Android &amp; Chrome Users:</b>
         <p style="margin:4px 0 8px 0;font-size:12px;color:#c0d2e5;">
-          Tap the button below to install Symmetry directly onto your Android device:
+          Tap the button below to install Symmetyr directly onto your Android device:
         </p>
         <button id="pwa-native-install-btn" style="background:var(--cyan);color:#002633;font-weight:800;font-size:12.5px;padding:9px 18px;border-radius:7px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
-          <span>📲</span> Install Symmetry App
+          <span>📲</span> Install Symmetyr App
         </button>
         <div style="font-size:11px;color:var(--mut);margin-top:6px;">
           (Or tap Chrome menu ⋮ → <b>Install app</b> / <b>Add to Home screen</b>)
@@ -1429,7 +1453,7 @@ header .brand span{color:var(--g)}
           <li>Tap the <b>Share button</b> (<span style="font-size:13px;font-weight:bold;">⎋</span> or <span style="font-size:13px;font-weight:bold;">📤</span>) at the bottom or top of Safari.</li>
           <li>Scroll down and tap <b>"Add to Home Screen"</b> (<span style="font-size:13px;font-weight:bold;">➕</span>).</li>
           <li>Tap <b>"Add"</b> in the top right corner.</li>
-          <li><b>Done!</b> The <b>Symmetry</b> icon will appear on your iPhone screen and launches full screen without any Safari URL bars!</li>
+          <li><b>Done!</b> The <b>Symmetyr</b> icon will appear on your iPhone screen and launches full screen without any Safari URL bars!</li>
         </ol>
       </div>
 
@@ -2175,7 +2199,7 @@ function buildPatientHeader(assessmentType) {
   const dateStr = new Date().toLocaleString();
 
   let h = "================================================================================\n";
-  h += `              SYMMETRY AI — CLINICAL ${assessmentType.toUpperCase()}\n`;
+  h += `              SYMMETYR AI — CLINICAL ${assessmentType.toUpperCase()}\n`;
   h += "================================================================================\n";
   h += "PATIENT DEMOGRAPHICS & CLINICAL RECORD:\n";
   h += ` • Patient Name:      ${pName.padEnd(28)} • Biological Sex:   ${pSex}\n`;
@@ -2391,7 +2415,7 @@ onClick('report-btn-download', () => {
   a.href = url;
   const pPrefix = currentPatient.name ? currentPatient.name.replace(/[^a-zA-Z0-9]/g, '_') : "Patient";
   const safeTitle = title.replace(/[^a-zA-Z0-9]/g, '_');
-  a.download = `Symmetry_${pPrefix}_${safeTitle}_${Date.now()}.txt`;
+  a.download = `Symmetyr_${pPrefix}_${safeTitle}_${Date.now()}.txt`;
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -2655,7 +2679,7 @@ onClick('owner-verify-btn', async () => {
     }
   } catch (e) {
     // Client fallback check
-    if (['bibek2026', '899', 'bbibek899', 'symmetry2026'].includes(val.toLowerCase())) {
+    if (['bibek2026', '899', 'bbibek899', 'symmetyr', 'symmetyr2026', 'symmetry', 'symmetry2026'].includes(val.toLowerCase())) {
       if (err) err.style.display = 'none';
       unlockOwnerSession(val.toLowerCase());
     } else {
@@ -3339,7 +3363,7 @@ try {
     console.warn = function() {};
     console.dir = function() {};
     console.table = function() {};
-    window.__origConsoleLog('%c🛡️ SYMMETRY CLINICAL SUITE: Proprietary Biomechanical IP. Press Alt+O or click Owner for Master Studio.', 'color:#00e5ff;font-size:13px;font-weight:bold;background:#05090e;padding:6px 10px;border-radius:4px;');
+    window.__origConsoleLog('%c🛡️ SYMMETYR CLINICAL SUITE: Proprietary Biomechanical IP. Press Alt+O or click Owner for Master Studio.', 'color:#00e5ff;font-size:13px;font-weight:bold;background:#05090e;padding:6px 10px;border-radius:4px;');
   }
 } catch(e) {}
 

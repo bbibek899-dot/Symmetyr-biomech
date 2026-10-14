@@ -1,7 +1,7 @@
 {
-  "name": "Symmetry - Biomechanical Posture, Gait & ROM",
-  "short_name": "Symmetry",
-  "description": "Clinical biomechanical screening: multi-view posture plumb lines, 5-phase gait kinematics, and goniometric ROM.",
+  "name": "Symmetyr - Biomechanical Posture, Gait & ROM",
+  "short_name": "Symmetyr",
+  "description": "Symmetyr clinical biomechanical screening: multi-view posture plumb lines, 5-phase gait kinematics, and goniometric ROM.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
