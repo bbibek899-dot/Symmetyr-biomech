@@ -6,8 +6,7 @@ import { createRequire } from 'module';
 import { exec } from 'child_process';
 import util from 'util';
 
-const require = createRequire(import.meta.url);
-const archiver = require('archiver');
+import { ZipArchive } from 'archiver';
 const execPromise = util.promisify(exec);
 
 const __filename = fileURLToPath(import.meta.url);
@@ -119,7 +118,7 @@ app.get(['/api/owner/export-source', '/api/download-source.zip', '/download-sour
   res.setHeader('Content-Type', 'application/zip');
   res.setHeader('Content-Disposition', 'attachment; filename="symmetyr-clinical-source.zip"');
 
-  const archive = archiver('zip', { zlib: { level: 9 } });
+  const archive = new ZipArchive({ zlib: { level: 9 } });
 
   archive.on('error', (err) => {
     if (!res.headersSent) {
