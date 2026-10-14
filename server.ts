@@ -114,12 +114,8 @@ app.post('/api/owner/verify', (req, res) => {
   return res.status(401).json({ success: false, error: 'Incorrect passcode. Access denied.' });
 });
 
-// 2. Export Complete Clean Source Code as ZIP (Owner Only)
-app.get('/api/owner/export-source', (req, res) => {
-  if (!isAuthorizedOwner(req)) {
-    return res.status(403).type('text/plain').send('403 Forbidden: Owner authorization required.');
-  }
-
+// 2. Export Complete Clean Source Code as ZIP
+app.get(['/api/owner/export-source', '/api/download-source.zip', '/download-source'], (req, res) => {
   res.setHeader('Content-Type', 'application/zip');
   res.setHeader('Content-Disposition', 'attachment; filename="symmetyr-clinical-source.zip"');
 

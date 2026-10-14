@@ -1349,8 +1349,8 @@ header .brand span{color:var(--g)}
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;">
             <div>
-              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:3px;">GitHub Repository (e.g. bbibek899/Symmetryr-biomech):</label>
-              <input type="text" id="gh-repo-input" value="bbibek899/Symmetryr-biomech" placeholder="bbibek899/Symmetryr-biomech" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;background:#060a0f;border:1px solid var(--border);color:#fff;font-size:12px;outline:none;">
+              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:3px;">GitHub Repository:</label>
+              <input type="text" id="gh-repo-input" value="bbibek899-dot/Symmetyr-biomech" placeholder="bbibek899-dot/Symmetyr-biomech" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;background:#060a0f;border:1px solid var(--border);color:#fff;font-size:12px;outline:none;">
             </div>
             <div>
               <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:3px;">GitHub Personal Access Token (starts with ghp_... from direct link above):</label>
@@ -1363,15 +1363,26 @@ header .brand span{color:var(--g)}
           </div>
         </div>
 
-        <!-- Option B: Manual Web Upload in 2 minutes -->
-        <div style="background:#0c1219;padding:14px;border-radius:10px;border:1px solid var(--border);">
+        <!-- Option B: Manual Web Upload in 2 minutes (No Token Needed) -->
+        <div style="background:#0c1219;padding:14px;border-radius:10px;border:1px solid rgba(0,230,118,0.35);">
           <div style="font-size:13px;font-weight:700;color:var(--g);display:flex;align-items:center;gap:6px;">
             <span>📦</span> Option B: Instant Drag &amp; Drop Upload (No Token Needed At All)
           </div>
-          <ol style="margin:8px 0 0 18px;padding:0;font-size:12px;color:#b5cbe0;line-height:1.7;">
-            <li>Click the <b>"Export Source ZIP"</b> tab above and tap <b>Download Source ZIP</b>.</li>
-            <li>Go to your repository <a href="https://github.com/bbibek899/Symmetryr-biomech" target="_blank" style="color:var(--cyan);font-weight:600;">github.com/bbibek899/Symmetryr-biomech</a>.</li>
-            <li>Click <b>"uploading an existing file"</b>, drop the files into GitHub, and tap <b>Commit changes</b>. Done!</li>
+          <p style="margin:6px 0 10px 0;font-size:12px;color:#c6dced;line-height:1.5;">
+            If you don't want to create a GitHub token, you can directly upload the files right in your browser:
+          </p>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+            <a href="/api/download-source.zip" download="symmetyr-clinical-source.zip" style="background:#00e676;color:#052414;font-weight:800;font-size:12px;padding:8px 16px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+              <span>📥</span> Step 1: Download Symmetyr ZIP
+            </a>
+            <a href="https://github.com/bbibek899-dot/Symmetyr-biomech/upload" target="_blank" style="background:#172638;border:1px solid var(--cyan);color:var(--cyan);font-weight:700;font-size:12px;padding:8px 16px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+              <span>🌐</span> Step 2: Open GitHub Upload Page
+            </a>
+          </div>
+          <ol style="margin:4px 0 0 18px;padding:0;font-size:11.5px;color:#9ebbd8;line-height:1.6;">
+            <li>Click <b>Step 1: Download Symmetyr ZIP</b> above to save the project to your device.</li>
+            <li>Unzip/extract the folder on your device.</li>
+            <li>Click <b>Step 2: Open GitHub Upload Page</b>, drag the unzipped files into the GitHub box, and click green <b>"Commit changes"</b>. Done!</li>
           </ol>
         </div>
 

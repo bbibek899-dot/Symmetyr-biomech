@@ -70,7 +70,7 @@ Anyone can open this URL directly on mobile Chrome, Safari, or desktop browsers 
 * Your teachers, friends, or examiners **do not need access to your GitHub repository** to use the application. They can test posture analysis, gait tracking, and generate PDF reports directly on their phones or laptops from the link.
 * Making your GitHub repository **Private** protects your source code so no one else can view or copy it.
 
-### 3. How to Push or Upload to GitHub (`bbibek899/Symmetryr-biomech`)
+### 3. How to Push or Upload to GitHub (`bbibek899-dot/Symmetyr-biomech`)
 * **Option A (Automated Git Push from In-App Owner Studio)**:
   1. Open the app, tap **Owner** (or triple-click the Symmetyr logo) and enter passcode `bibek2026` or `899` or `symmetyr`.
   2. Open the direct token page: `https://github.com/settings/tokens/new?scopes=repo&description=Symmetyr-Biomech`
@@ -78,7 +78,7 @@ Anyone can open this URL directly on mobile Chrome, Safari, or desktop browsers 
   4. Paste your token and click **Push App to GitHub Now**!
 * **Option B (Zero Token Drag & Drop)**:
   1. Download `symmetyr-clinical-source.zip` from the Owner Studio.
-  2. Go to your repository `https://github.com/bbibek899/Symmetryr-biomech`.
+  2. Go to your repository `https://github.com/bbibek899-dot/Symmetyr-biomech`.
   3. Click **uploading an existing file**, drag the unzipped files, and commit changes.
 
 ### 4. Install to Mobile Home Screen (App Icon)
