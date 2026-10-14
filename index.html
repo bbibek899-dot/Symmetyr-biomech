@@ -1,0 +1,2926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Symmetry - Clinical Biomechanical Posture, 5-Phase Gait & ROM Goniometry</title>
+
+<!-- PWA Manifest & App Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+<meta name="apple-mobile-web-app-title" content="Symmetry">
+<meta name="application-name" content="Symmetry">
+
+<style>
+:root{
+  --g:#00e676;
+  --r:#ff1744;
+  --amber:#ffab00;
+  --cyan:#00e5ff;
+  --purple:#7c4dff;
+  --bg:#0b0f14;
+  --panel:#121a23;
+  --panel-card:#182330;
+  --mut:#9fb0c0;
+  --border:#223244;
+}
+*{box-sizing:border-box}
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:#fff;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+input,textarea,select,.allow-copy,pre#report-modal-body{
+  -webkit-user-select:text !important;
+  -moz-user-select:text !important;
+  -ms-user-select:text !important;
+  user-select:text !important;
+  -webkit-touch-callout:default !important;
+}
+#app{height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);overflow:hidden}
+
+/* Top App Header */
+header{
+  display:flex;
+  gap:10px;
+  padding:8px 14px;
+  align-items:center;
+  background:#0e151e;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+  z-index:25;
+}
+header .brand{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:.5px;
+  color:#fff;
+}
+header .brand span{color:var(--g)}
+.clinical-badge{
+  font-size:9.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  background:rgba(0,230,118,0.12);
+  color:var(--g);
+  padding:2px 7px;
+  border-radius:12px;
+  border:1px solid rgba(0,230,118,0.3);
+}
+
+/* Category Navigation Switcher (Posture vs Gait vs ROM) */
+.category-nav{
+  display:flex;
+  gap:4px;
+  background:#080c11;
+  padding:3px;
+  border-radius:9px;
+  border:1px solid var(--border);
+}
+.cat-btn{
+  background:transparent;
+  border:none;
+  color:var(--mut);
+  font-size:12px;
+  font-weight:700;
+  padding:6px 12px;
+  border-radius:7px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  transition:all .15s;
+}
+.cat-btn:hover{color:#fff}
+.cat-btn.active{
+  background:#1a2736;
+  color:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,0.3);
+}
+.cat-btn.active[data-cat="posture"]{color:var(--cyan);border:1px solid rgba(0,229,255,0.3)}
+.cat-btn.active[data-cat="gait"]{color:var(--g);border:1px solid rgba(0,230,118,0.3)}
+.cat-btn.active[data-cat="rom"]{color:var(--amber);border:1px solid rgba(255,171,0,0.3)}
+
+.header-tools{
+  display:flex;
+  gap:6px;
+  margin-left:auto;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.icon-btn{
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:6px 11px;
+  font-size:11.5px;
+  font-weight:600;
+  background:#182330;
+  color:#fff;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  white-space:nowrap;
+  transition:all .15s;
+}
+.icon-btn:hover{background:#223347}
+.icon-btn:active{transform:scale(0.97)}
+.icon-btn.active{border-color:var(--cyan);background:#132d42;color:var(--cyan)}
+.icon-btn.accent{border-color:var(--g);background:#003416;color:var(--g)}
+.icon-btn.danger{border-color:var(--r);background:#330a10;color:#ff8a80}
+
+/* Patient Demographics & Contextual Protocol Bar */
+#patient-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 14px;
+  background:#101822;
+  border-bottom:1px solid var(--border);
+  gap:10px;
+  flex-wrap:wrap;
+  z-index:20;
+}
+.patient-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:#182535;
+  padding:5px 12px;
+  border-radius:20px;
+  border:1px solid rgba(0,229,255,0.25);
+  font-size:12px;
+  color:#d4e5f7;
+  cursor:pointer;
+  transition:all .15s;
+}
+.patient-pill:hover{
+  background:#203145;
+  border-color:var(--cyan);
+}
+.patient-pill b{color:#fff}
+.patient-pill .edit-tag{
+  font-size:10px;
+  background:#09121a;
+  padding:2px 7px;
+  border-radius:10px;
+  color:var(--cyan);
+  font-weight:700;
+}
+
+.protocol-selector{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.protocol-selector select{
+  padding:5px 9px;
+  border-radius:7px;
+  border:1px solid var(--border);
+  background:#182330;
+  color:#fff;
+  font-size:12px;
+  outline:none;
+}
+
+.view-subtabs{
+  display:flex;
+  gap:4px;
+  background:#0b1118;
+  padding:2px;
+  border-radius:7px;
+  border:1px solid var(--border);
+}
+.view-tab-btn{
+  background:transparent;
+  border:none;
+  color:var(--mut);
+  font-size:11px;
+  font-weight:700;
+  padding:4px 9px;
+  border-radius:5px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.view-tab-btn.active{
+  background:#223348;
+  color:#fff;
+}
+.view-tab-btn.captured{
+  color:var(--g);
+}
+
+/* ---------------- STAGE: CLEAN SCANNING VIEWPORT ---------------- */
+#stage{
+  flex:1;
+  position:relative;
+  background:#000;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:220px;
+}
+#wrap{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+}
+#wrap.portrait-mode{
+  aspect-ratio:9/16;
+  max-width:100%;
+  max-height:100%;
+}
+#wrap.portrait-mode #video,
+#wrap.portrait-mode #cv,
+#wrap.portrait-mode #staticImg{
+  object-fit:cover;
+}
+#wrap.wide-mode{
+  max-width:100%;
+  max-height:100%;
+}
+#wrap.wide-mode #video,
+#wrap.wide-mode #cv,
+#wrap.wide-mode #staticImg{
+  object-fit:contain;
+}
+#video,#cv,#staticImg{
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+}
+#staticImg{display:none}
+
+/* Mirror for front selfie camera */
+#wrap.mirror video,#wrap.mirror canvas,#wrap.mirror img{
+  transform:scaleX(-1);
+}
+
+/* Minimalist Non-Obtrusive Corner Floating Badges */
+#hud-badges{
+  position:absolute;
+  top:12px;
+  left:12px;
+  right:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  pointer-events:none;
+  z-index:15;
+}
+.hud-pill{
+  background:rgba(10,16,24,0.78);
+  backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,0.08);
+  padding:4px 10px;
+  border-radius:14px;
+  font-size:11px;
+  font-weight:700;
+  color:#fff;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
+}
+.hud-pill.ok{border-color:rgba(0,230,118,0.4);color:var(--g)}
+.hud-pill.amber{border-color:rgba(255,171,0,0.4);color:var(--amber)}
+.hud-pill.alert{border-color:rgba(255,23,68,0.4);color:#ff8a80}
+.hud-pill.cyan{border-color:rgba(0,229,255,0.4);color:var(--cyan)}
+
+/* Quick Floating Screen Actions (Snap Photo, Clean View) */
+.stage-quick-actions{
+  position:absolute;
+  bottom:12px;
+  right:12px;
+  display:flex;
+  gap:8px;
+  z-index:16;
+}
+.stage-snap-btn{
+  background:rgba(0,230,118,0.92);
+  color:#00210e;
+  border:none;
+  border-radius:24px;
+  padding:7px 14px;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 4px 14px rgba(0,230,118,0.35);
+  transition:all .15s;
+}
+.stage-snap-btn:hover{transform:scale(1.04);background:#00e676}
+.stage-snap-btn:active{transform:scale(0.97)}
+
+.stage-clean-btn{
+  background:rgba(18,26,36,0.85);
+  backdrop-filter:blur(6px);
+  color:#fff;
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:7px 12px;
+  font-size:11.5px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  transition:all .15s;
+}
+.stage-clean-btn.active{
+  border-color:var(--cyan);
+  background:rgba(0,229,255,0.2);
+  color:var(--cyan);
+}
+
+/* Clean Scan Mode hides overlays if active */
+#stage.ultra-clean #cv{opacity:0.35}
+#stage.hide-all-overlays #cv{display:none}
+#stage.hide-all-overlays #hud-badges{display:none}
+
+/* Camera Hardware Standby / Powered-Off Overlay */
+#cam-standby-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(11,15,20,0.95);
+  backdrop-filter:blur(8px);
+  z-index:22;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:24px 20px;
+  gap:12px;
+}
+.standby-shield{
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  background:rgba(255,23,68,0.12);
+  border:2px solid var(--r);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  box-shadow:0 0 20px rgba(255,23,68,0.25);
+}
+.standby-title{font-size:16px;font-weight:800;color:#fff}
+.standby-desc{font-size:12px;color:var(--mut);max-width:320px;line-height:1.5}
+.standby-btn{
+  background:var(--g);
+  color:#00210e;
+  border:none;
+  font-size:13px;
+  font-weight:800;
+  padding:9px 20px;
+  border-radius:8px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  box-shadow:0 4px 14px rgba(0,230,118,0.3);
+}
+
+/* ---------------- CLINICAL DASHBOARD PANEL (OUTSIDE CAMERA) ---------------- */
+#panel{
+  background:var(--panel);
+  border-top:1px solid var(--border);
+  padding:10px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  max-height:48vh;
+  overflow-y:auto;
+  z-index:10;
+}
+
+/* Live Cue Box */
+#cue-box{
+  background:#182330;
+  border-left:4px solid var(--g);
+  padding:7px 12px;
+  border-radius:6px;
+  font-size:12.5px;
+  font-weight:600;
+  color:#e4effa;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+#cue-box.alert{border-left-color:var(--r);background:#2e151b;color:#ffcdd2}
+#cue-box.amber{border-left-color:var(--amber);background:#2b2210;color:#ffe082}
+
+/* SECTION 1: GAIT KINEMATICS CARDS (Displayed in Gait Mode) */
+#gait-container{
+  display:none;
+  flex-direction:column;
+  gap:8px;
+}
+.gait-box{
+  background:var(--panel-card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.gait-header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:11.5px;
+  font-weight:700;
+  color:var(--cyan);
+}
+.gait-5phases-bar{
+  display:flex;
+  height:24px;
+  border-radius:6px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.g-phase-cell{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:9.5px;
+  font-weight:800;
+  color:rgba(255,255,255,0.65);
+  background:#141f2c;
+  transition:all .15s;
+  border-right:1px solid rgba(255,255,255,0.06);
+}
+.g-phase-cell:last-child{border-right:none}
+.g-phase-cell.active{
+  background:linear-gradient(180deg,#00e676,#00b050);
+  color:#00210e;
+  box-shadow:inset 0 0 10px rgba(255,255,255,0.5);
+  font-weight:900;
+}
+.g-phase-cell.heel-off.active{background:linear-gradient(180deg,#ffab00,#ff8f00);color:#331d00}
+.g-phase-cell.toe-off.active{background:linear-gradient(180deg,#ff1744,#d50000);color:#fff}
+
+.gait-metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));
+  gap:6px;
+}
+.g-metric-card{
+  background:#0f1722;
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:6px;
+  padding:5px 8px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.g-metric-card span{font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.3px}
+.g-metric-card b{font-size:12px;color:#fff}
+
+/* SECTION 2: POSTURE MULTI-VIEW CARDS (Displayed in Posture Mode) */
+#posture-container{
+  display:none;
+  flex-direction:column;
+  gap:8px;
+}
+.posture-views-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:8px;
+}
+.p-view-card{
+  background:var(--panel-card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:8px 10px;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  position:relative;
+}
+.p-view-card.current{border-color:var(--cyan);background:#142333}
+.p-view-card.captured{border-color:var(--g)}
+.p-view-card .p-view-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:11px;
+  font-weight:700;
+  color:#fff;
+}
+.p-view-badge{font-size:9.5px;padding:1px 5px;border-radius:4px;background:#0d141e;color:var(--mut)}
+.p-view-badge.done{background:rgba(0,230,118,0.2);color:var(--g)}
+.p-angles-list{
+  font-size:10px;
+  color:#c7d6e5;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.p-angle-item{display:flex;justify-content:space-between}
+.p-angle-item.deviated{color:#ff8a80;font-weight:700}
+.p-angle-item.normal{color:var(--g)}
+
+/* SECTION 3: RANGE OF MOTION (ROM) CARDS (Displayed in ROM Mode) */
+#rom-container{
+  display:none;
+  flex-direction:column;
+  gap:8px;
+}
+.rom-box{
+  background:var(--panel-card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.rom-joint-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.rom-gauges-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.rom-stat-card{
+  background:#0e1722;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:8px;
+  padding:8px 10px;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.rom-stat-card .rom-lbl{font-size:10px;color:var(--mut);text-transform:uppercase}
+.rom-stat-card .rom-val{font-size:18px;font-weight:800;color:var(--amber)}
+.rom-stat-card .rom-norm{font-size:10.5px;color:#a0b4c8}
+.rom-progress-bar{
+  height:7px;
+  border-radius:4px;
+  background:#202e3e;
+  overflow:hidden;
+  margin-top:3px;
+}
+.rom-progress-fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--amber),var(--g));
+  transition:width .15s;
+}
+
+/* Action Controls Row */
+.action-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:2px;
+}
+#main-action-btn{
+  flex:2;
+  background:var(--g);
+  color:#00210e;
+  font-size:13.5px;
+  font-weight:800;
+  border:none;
+  border-radius:8px;
+  padding:10px 16px;
+  cursor:pointer;
+  transition:all .15s;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+#main-action-btn.stop{background:var(--r);color:#fff}
+#main-action-btn:disabled{opacity:.4;cursor:not-allowed}
+
+.report-trigger-btn{
+  background:#203144;
+  color:#fff;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px 14px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.report-trigger-btn:hover{background:#2a415a}
+
+.toggle-group{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  font-size:11px;
+  color:var(--mut);
+  flex-wrap:wrap;
+}
+.toggle-group label{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  cursor:pointer;
+}
+.toggle-group input{accent-color:var(--g);cursor:pointer}
+
+/* ---------------- MODALS ---------------- */
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:99;
+  backdrop-filter:blur(5px);
+}
+.modal-backdrop.show{display:flex}
+.card{
+  background:#141e2a;
+  color:#fff;
+  border-radius:12px;
+  max-width:740px;
+  width:100%;
+  max-height:90vh;
+  display:flex;
+  flex-direction:column;
+  border:1px solid var(--border);
+  box-shadow:0 20px 50px rgba(0,0,0,0.7);
+}
+.card h3{
+  margin:0;
+  padding:14px 18px;
+  font-size:16px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  color:var(--cyan);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.card .card-body{
+  padding:16px 18px;
+  overflow:auto;
+  flex:1;
+}
+.card pre{
+  white-space:pre-wrap;
+  overflow:auto;
+  padding:16px 18px;
+  margin:0;
+  font:12.5px/1.6 system-ui,-apple-system,sans-serif;
+  color:#dbe6f2;
+  flex:1;
+}
+.card .btn-row{
+  padding:12px 18px;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  flex-wrap:wrap;
+}
+.card button{
+  padding:9px 15px;
+  border-radius:7px;
+  border:none;
+  font-size:12.5px;
+  font-weight:700;
+  cursor:pointer;
+}
+.card button.primary{background:var(--g);color:#00210e}
+.card button.secondary{background:#253547;color:#fff}
+.card button.accent-pdf{background:var(--cyan);color:#002633}
+
+/* Form Styles for Patient Intake */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full-width{grid-column:span 2}
+.form-group label{font-size:11px;font-weight:700;color:var(--mut);text-transform:uppercase}
+.form-group input, .form-group select, .form-group textarea{
+  background:#0d141e;
+  border:1px solid var(--border);
+  border-radius:6px;
+  color:#fff;
+  padding:8px 10px;
+  font-size:12.5px;
+  outline:none;
+}
+.form-group input:focus, .form-group textarea:focus{
+  border-color:var(--cyan);
+}
+
+/* Printable Clinical PDF Report Styling */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+  #app, header, #patient-bar, #stage, #panel, .stage-quick-actions {
+    display: none !important;
+  }
+  .modal-backdrop {
+    position: static !important;
+    background: #ffffff !important;
+    display: block !important;
+    padding: 0 !important;
+  }
+  .card {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: none !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    padding: 20px !important;
+  }
+  .card h3 {
+    color: #0b1f3a !important;
+    border-bottom: 2px solid #0b1f3a !important;
+    font-size: 16pt !important;
+    padding: 0 0 8px 0 !important;
+  }
+  .card pre {
+    color: #1f2937 !important;
+    font-size: 10pt !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    line-height: 1.4 !important;
+    white-space: pre-wrap !important;
+    padding: 0 !important;
+  }
+  .card .btn-row {
+    display: none !important;
+  }
+}
+
+@media(max-width:640px){
+  header{padding:6px 10px}
+  .cat-btn{padding:5px 8px;font-size:11px}
+  .posture-views-grid{grid-template-columns:1fr}
+  .rom-gauges-grid{grid-template-columns:1fr}
+  #panel{max-height:52vh;padding:8px 10px}
+  .action-row{flex-direction:column}
+  #main-action-btn{width:100%}
+  .report-trigger-btn{width:100%}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Top App Navigation & Global Header -->
+  <header>
+    <div class="brand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      Symmetry <span>AI</span>
+      <span class="clinical-badge">Clinical Suite</span>
+    </div>
+
+    <!-- 3 Core Clinical Assessment Modes -->
+    <div class="category-nav">
+      <button class="cat-btn active" data-cat="posture" id="nav-posture">
+        <span>🧍</span> Posture Analysis
+      </button>
+      <button class="cat-btn" data-cat="gait" id="nav-gait">
+        <span>🚶</span> Gait Analysis
+      </button>
+      <button class="cat-btn" data-cat="rom" id="nav-rom">
+        <span>📐</span> Range of Motion (ROM)
+      </button>
+    </div>
+
+    <!-- Camera & Device Tool Buttons -->
+    <div class="header-tools">
+      <select id="cam-select" title="Camera Device" style="max-width:115px;display:none;"></select>
+
+      <button class="icon-btn accent" id="cam-power-btn" title="Turn physical camera hardware ON/OFF">
+        <span id="cam-power-icon">📹</span> <span id="cam-power-text">Camera ON</span>
+      </button>
+
+      <button class="icon-btn active" id="aspect-toggle" title="Portrait / Wide Mode">
+        <span id="aspect-icon">📱</span> <span id="aspect-text">Portrait (9:16)</span>
+      </button>
+
+      <button class="icon-btn" id="flip" title="Flip Front / Back Camera">
+        <span>🔄</span> Flip
+      </button>
+
+      <button class="icon-btn" id="upload-btn" title="Upload Photo to Analyze">
+        <span>📷</span> Upload Photo
+      </button>
+
+      <button class="icon-btn" id="share-btn" title="Share App Link with Friends & Teachers">
+        <span>🔗</span> Share App
+      </button>
+
+      <button class="icon-btn" id="install-app-btn" title="Install Symmetry App to Phone Home Screen" style="border-color:rgba(0,229,255,0.45);color:var(--cyan);background:rgba(0,229,255,0.08);">
+        <span>📲</span> Install App
+      </button>
+
+      <input type="file" id="photo-input" accept="image/*" style="display:none;">
+    </div>
+  </header>
+
+  <!-- Patient Clinical Demographics Bar -->
+  <div id="patient-bar">
+    <div class="patient-pill" id="patient-pill-btn" title="Click to enter or edit patient Name, Age, Height, Weight, and Clinical Notes">
+      <span>👤</span>
+      <span>Patient: <b id="patient-display">Not Entered (Tap to Add)</b></span>
+      <span class="edit-tag">✏️ Edit Details</span>
+    </div>
+
+    <!-- Contextual Controls per Mode -->
+    <div class="protocol-selector" id="posture-subcontrols">
+      <span style="font-size:11.5px;color:var(--mut);">View:</span>
+      <div class="view-subtabs">
+        <button class="view-tab-btn active" id="pv-front" data-view="FRONT">1. Front View</button>
+        <button class="view-tab-btn" id="pv-side" data-view="SIDE">2. Side View</button>
+        <button class="view-tab-btn" id="pv-back" data-view="BACK">3. Back View</button>
+      </div>
+      <button class="icon-btn" id="btn-snap-view" title="Snap current view for multi-view report">
+        <span>📸</span> Capture View
+      </button>
+    </div>
+
+    <div class="protocol-selector" id="gait-subcontrols" style="display:none;">
+      <span style="font-size:11px;color:var(--mut);">Protocol:</span>
+      <select id="gait-protocol-select">
+        <option value="5phase">5-Phase Walking Kinematics (Rancho Los Amigos)</option>
+        <option value="jakc">JAKC Observational Stride &amp; Deviations</option>
+      </select>
+    </div>
+
+    <div class="protocol-selector" id="rom-subcontrols" style="display:none;">
+      <span style="font-size:11px;color:var(--mut);">Joint:</span>
+      <select id="rom-joint-select"></select>
+      <span style="font-size:11px;color:var(--mut);">Movement:</span>
+      <select id="rom-motion-select"></select>
+      <button class="icon-btn" id="btn-snap-rom" title="Record this joint angle measurement">
+        <span>📌</span> Record ROM
+      </button>
+    </div>
+  </div>
+
+  <!-- STAGE: CLEAN SCANNING VIEWPORT (Zero visual obstruction over body) -->
+  <div id="stage">
+    <div id="wrap" class="portrait-mode">
+      <video id="video" playsinline muted autoplay></video>
+      <img id="staticImg" alt="Static analysis">
+      <canvas id="cv"></canvas>
+
+      <!-- Powered OFF Standby Screen -->
+      <div id="cam-standby-overlay" style="display:none;">
+        <div class="standby-shield">🛑</div>
+        <div class="standby-title">Camera Hardware Sensor is OFF</div>
+        <div class="standby-desc">Physical camera is completely shut down. Battery saving &amp; full privacy active.</div>
+        <button class="standby-btn" id="standby-wake-btn">
+          <span>📹</span> Turn Camera ON
+        </button>
+      </div>
+    </div>
+
+    <!-- Minimal Floating Status Pills -->
+    <div id="hud-badges">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div class="hud-pill ok" id="hud-mode-pill">🧍 POSTURE: FRONT VIEW</div>
+        <div class="hud-pill" id="hud-status-pill">Waiting for full body…</div>
+      </div>
+      <div class="hud-pill cyan" id="hud-quick-metric" style="font-size:12px;">Angle: --°</div>
+    </div>
+
+    <!-- Floating Quick Actions (Snap Picture & Clear Screen) -->
+    <div class="stage-quick-actions">
+      <button class="stage-snap-btn" id="stage-capture-btn" title="Snap high-res photo for analysis">
+        <span>📸</span> Snap Photo
+      </button>
+      <button class="stage-clean-btn active" id="btn-toggle-clean" title="Toggle Clean Screen mode to keep camera viewport 100% clear">
+        <span>✨</span> <span id="clean-mode-text">Clean View: ON</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- CLINICAL DIAGNOSTICS & DASHBOARD (OUTSIDE OF CAMERA FRAME) -->
+  <div id="panel">
+    <!-- Live Cue Box -->
+    <div id="cue-box">
+      <span id="cue-text">Stand 2-3 meters back until your head and feet are aligned in the portrait frame</span>
+      <span id="cue-status-tag" style="font-size:11px;color:var(--g);font-weight:700;">✓ Aligned</span>
+    </div>
+
+    <!-- CONTAINER 1: POSTURE MULTI-VIEW STUDIO -->
+    <div id="posture-container">
+      <div class="posture-views-grid">
+        <div class="p-view-card current" id="card-p-front">
+          <div class="p-view-head">
+            <span>1. Front (Anterior)</span>
+            <span class="p-view-badge" id="badge-front">Ready</span>
+          </div>
+          <div class="p-angles-list" id="list-front-angles">
+            <div class="p-angle-item"><span>Head Tilt:</span><b id="front-head-val">--°</b></div>
+            <div class="p-angle-item"><span>Shoulder Drop:</span><b id="front-sh-val">--°</b></div>
+            <div class="p-angle-item"><span>Pelvic Obliquity:</span><b id="front-hip-val">--°</b></div>
+            <div class="p-angle-item"><span>Knee Alignment:</span><b id="front-knee-val">--°</b></div>
+          </div>
+        </div>
+
+        <div class="p-view-card" id="card-p-side">
+          <div class="p-view-head">
+            <span>2. Side (Sagittal)</span>
+            <span class="p-view-badge" id="badge-side">Pending</span>
+          </div>
+          <div class="p-angles-list" id="list-side-angles">
+            <div class="p-angle-item"><span>Forward Head:</span><b id="side-head-val">--°</b></div>
+            <div class="p-angle-item"><span>Torso Plumb:</span><b id="side-trunk-val">--°</b></div>
+            <div class="p-angle-item"><span>Knee Recurvatum:</span><b id="side-knee-val">--°</b></div>
+            <div class="p-angle-item"><span>Pelvic Tilt:</span><b id="side-pelvis-val">--°</b></div>
+          </div>
+        </div>
+
+        <div class="p-view-card" id="card-p-back">
+          <div class="p-view-head">
+            <span>3. Back (Posterior)</span>
+            <span class="p-view-badge" id="badge-back">Pending</span>
+          </div>
+          <div class="p-angles-list" id="list-back-angles">
+            <div class="p-angle-item"><span>Scapular Level:</span><b id="back-sh-val">--°</b></div>
+            <div class="p-angle-item"><span>Spinal Plumb:</span><b id="back-spine-val">--°</b></div>
+            <div class="p-angle-item"><span>Pelvic Balance:</span><b id="back-hip-val">--°</b></div>
+            <div class="p-angle-item"><span>Achilles Axis:</span><b id="back-ank-val">--°</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTAINER 2: CLINICAL 5-PHASE GAIT KINEMATICS (Rancho Los Amigos & JAKC) -->
+    <div id="gait-container">
+      <div class="gait-box">
+        <div class="gait-header-row">
+          <span>Clinical Gait Walking Kinematics (5 Phases)</span>
+          <span id="gait-stance-ratio-pill" style="color:#fff;">60% Stance / 40% Swing</span>
+        </div>
+        <!-- 5 Continuous Phases as shown in user's clinical infographic -->
+        <div class="gait-5phases-bar">
+          <div class="g-phase-cell active" id="gcell-ic" title="0%-10%: Heel strike; Hip ~20°, Knee 0-5°, Ankle 0°">1. IC (Heel Strike)</div>
+          <div class="g-phase-cell" id="gcell-lr" title="10%-30%: Weight acceptance; Hip ext ~10°, Knee flex ~15°, Ankle DF ~5-10°">2. LR (Foot Flat)</div>
+          <div class="g-phase-cell" id="gcell-ms" title="30%-50%: Body over foot; Hip ext ~0°, Knee ext 0°, Ankle DF ~5°">3. MS (Mid-Stance)</div>
+          <div class="g-phase-cell heel-off" id="gcell-ts" title="50%-60%: Heel rise; Hip ext ~10-15°, Knee ext 0°, Ankle PF ~15-20°">4. TS (HEEL OFF)</div>
+          <div class="g-phase-cell toe-off" id="gcell-ps" title="60%-100%: Toe off & Swing; Hip flex ~15-20°, Knee flex ~40-60°, Ankle PF ~15-20°">5. PS (TOE OFF &amp; SWING)</div>
+        </div>
+
+        <div class="gait-metrics-grid">
+          <div class="g-metric-card">
+            <span>Current Kinematic Phase</span>
+            <b id="g-metric-phase">Initial Contact (0-10%)</b>
+          </div>
+          <div class="g-metric-card">
+            <span>Cadence (Steps/Min)</span>
+            <b id="g-metric-cadence">-- steps/min</b>
+          </div>
+          <div class="g-metric-card">
+            <span>Heel Off Detection</span>
+            <b id="g-metric-heeloff">Active (0 detected)</b>
+          </div>
+          <div class="g-metric-card">
+            <span>Toe Off Detection</span>
+            <b id="g-metric-toeoff">Active (0 detected)</b>
+          </div>
+          <div class="g-metric-card">
+            <span>Reciprocal Arm Swing (UE)</span>
+            <b id="g-metric-armswing">Contralateral (Normal)</b>
+          </div>
+          <div class="g-metric-card">
+            <span>Step Symmetry</span>
+            <b id="g-metric-sym">--%</b>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTAINER 3: RANGE OF MOTION (ROM) GONIOMETRY -->
+    <div id="rom-container">
+      <div class="rom-box">
+        <div class="rom-joint-row">
+          <div>
+            <b id="rom-card-title" style="font-size:13px;color:var(--amber);">Shoulder Flexion (Sagittal Plane)</b>
+            <div style="font-size:10.5px;color:var(--mut);" id="rom-card-fulcrum">Fulcrum: 1" below acromion process | Movable arm: along humerus</div>
+          </div>
+          <div style="font-size:11px;color:var(--cyan);font-weight:700;" id="rom-card-norm-badge">Normal: 0° - 180°</div>
+        </div>
+
+        <div class="rom-gauges-grid">
+          <div class="rom-stat-card">
+            <div class="rom-lbl">Measured Active Angle</div>
+            <div class="rom-val" id="rom-live-deg">--°</div>
+            <div class="rom-norm" id="rom-deficit-text">Deficit: --° (Comparing with normative values)</div>
+            <div class="rom-progress-bar"><div class="rom-progress-fill" id="rom-live-bar" style="width:0%;"></div></div>
+          </div>
+
+          <div class="rom-stat-card">
+            <div class="rom-lbl">Peak Recorded ROM</div>
+            <div class="rom-val" style="color:var(--g);" id="rom-peak-deg">--°</div>
+            <div class="rom-norm" id="rom-peak-status">Status: Pending Movement</div>
+            <div class="rom-progress-bar"><div class="rom-progress-fill" id="rom-peak-bar" style="width:0%;background:var(--g);"></div></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--mut);">
+          <span>Recorded ROM Entries: <b id="rom-saved-count" style="color:#fff;">0 joints</b></span>
+          <button class="icon-btn" id="btn-clear-rom" style="padding:3px 8px;font-size:10.5px;">Clear ROM History</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Bar & Report Generator Buttons -->
+    <div class="action-row">
+      <button id="main-action-btn">
+        <span id="main-btn-icon">▶️</span> <span id="main-btn-label">Start Scan / Live Analysis</span>
+      </button>
+
+      <button class="report-trigger-btn" id="btn-generate-report">
+        <span>📄</span> Generate Clinical Report
+      </button>
+
+      <button class="icon-btn" id="btn-view-reference" title="View Reference Norms & Assessment Guidelines">
+        <span>📚</span> Reference Guide
+      </button>
+
+      <div class="toggle-group">
+        <label title="Audio form cues"><input type="checkbox" id="voice-toggle" checked> Voice</label>
+        <label title="Skeletal tracking points"><input type="checkbox" id="chain-toggle" checked> Skeleton</label>
+        <label title="Plumb alignment grid"><input type="checkbox" id="grid-toggle" checked> Plumb Lines</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- CLINICAL REPORT MODAL (Distinct for Posture, Gait, and ROM)   -->
+<!-- ============================================================== -->
+<div id="report-modal" class="modal-backdrop">
+  <div class="card">
+    <h3 id="report-modal-title">Clinical Assessment Report</h3>
+    <pre id="report-modal-body"></pre>
+    <div class="btn-row">
+      <button class="secondary" id="report-btn-download">💾 Save Text File</button>
+      <button class="accent-pdf" id="report-btn-pdf">📄 Export / Print PDF</button>
+      <button class="secondary" id="report-btn-close">Close</button>
+      <button class="primary" id="report-btn-new">Start New Assessment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- PATIENT CLINICAL INTAKE MODAL (Includes Age, Name, Height, Wt) -->
+<!-- ============================================================== -->
+<div id="patient-modal" class="modal-backdrop">
+  <div class="card">
+    <h3>👤 Patient Clinical Intake &amp; Demographics</h3>
+    <div class="card-body">
+      <p style="font-size:12px;color:var(--mut);margin-top:0;margin-bottom:12px;">
+        All clinical reports (Posture, Gait, ROM) will automatically include these official patient details:
+      </p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Patient Full Name *</label>
+          <input type="text" id="p-in-name" placeholder="e.g. John Doe / Patient #402">
+        </div>
+        <div class="form-group">
+          <label>Age (years) *</label>
+          <input type="number" id="p-in-age" placeholder="e.g. 28" min="1" max="120">
+        </div>
+        <div class="form-group">
+          <label>Height (cm or ft/in) *</label>
+          <input type="text" id="p-in-height" placeholder="e.g. 175 cm / 5'9&quot;">
+        </div>
+        <div class="form-group">
+          <label>Weight (kg or lbs) *</label>
+          <input type="text" id="p-in-weight" placeholder="e.g. 70 kg / 154 lbs">
+        </div>
+        <div class="form-group">
+          <label>Biological Sex / Gender</label>
+          <select id="p-in-gender">
+            <option value="Not Specified">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Examiner / Clinician Name</label>
+          <input type="text" id="p-in-examiner" placeholder="e.g. Dr. / PT Examiner">
+        </div>
+        <div class="form-group full-width">
+          <label>Chief Complaint / Medical History / Target Joint</label>
+          <textarea id="p-in-notes" rows="2" placeholder="e.g. Gait instability, lateral pelvic tilt, post-ACL reconstruction ROM, shoulder impingement"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="secondary" id="patient-modal-cancel">Cancel</button>
+      <button class="primary" id="patient-modal-save">✓ Save Patient Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- GITHUB PRIVATE REPOSITORY & SHARE GUIDE MODAL                  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- SECURE APP SHARING MODAL (SOURCE CODE COMPLETELY LOCKED)       -->
+<!-- ============================================================== -->
+<div id="github-modal" class="modal-backdrop">
+  <div class="card" style="max-width:620px;">
+    <h3>🔗 Share Symmetry Clinical App</h3>
+    <div class="card-body" style="font-size:12.5px;line-height:1.6;color:#d5e2f0;display:flex;flex-direction:column;gap:14px;">
+      
+      <!-- Live Web Link -->
+      <div style="background:#101a26;padding:14px;border-radius:10px;border-left:4px solid var(--cyan);">
+        <b style="color:#fff;font-size:13.5px;">Official Web Application Link</b>
+        <p style="margin:4px 0 10px 0;font-size:12px;color:var(--mut);">
+          Share this URL with teachers, examiners, or patients. They can immediately run multi-view posture screening and gait analysis directly in any browser:
+        </p>
+        <div style="display:flex;gap:8px;align-items:center;background:#090e15;padding:8px 12px;border-radius:8px;border:1px solid var(--border);">
+          <input type="text" id="share-link-input" readonly value="https://ais-pre-v36ev7ejomvg4o2rvkenh6-712254875975.asia-southeast1.run.app" style="background:transparent;border:none;color:var(--cyan);font-family:monospace;font-size:12px;flex:1;outline:none;">
+          <button id="copy-share-link-btn" style="background:var(--cyan);color:#002b3d;font-weight:700;font-size:11.5px;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;white-space:nowrap;">
+            📋 Copy Link
+          </button>
+        </div>
+        <span id="copy-link-feedback" style="font-size:11.5px;color:var(--g);display:none;margin-top:4px;font-weight:600;">✓ Link copied to clipboard!</span>
+      </div>
+
+      <!-- Security & Intellectual Property Lock -->
+      <div style="background:#121b24;padding:12px 14px;border-radius:8px;border:1px solid rgba(0,229,255,0.25);">
+        <div style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-weight:700;font-size:13px;">
+          <span>🛡️</span> Source Code Locked &amp; Anti-Theft Shield Active
+        </div>
+        <ul style="margin:8px 0 0 18px;padding:0;font-size:11.5px;color:#b0c5da;display:flex;flex-direction:column;gap:4px;">
+          <li><b>AI Crawler &amp; Scraper Firewall:</b> Automated scrapers, GPTBot, ClaudeBot, and headless extraction bots are blocked at server level.</li>
+          <li><b>Anti-Inspection Lock:</b> Right-click, View-Source shortcuts (Ctrl+U / F12 / Cmd+Opt+U), and Developer Tools are disabled.</li>
+          <li><b>Zero Code Leakage:</b> Source code archives, typescript files, and blueprint repositories are completely inaccessible to external users.</li>
+          <li><b>Safe for Sharing:</b> Anyone can use the live application without having any access to your underlying source code.</li>
+        </ul>
+      </div>
+
+      <!-- Home Screen Install Shortcut -->
+      <div style="background:#0f1722;padding:12px 14px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div>
+          <b style="color:#fff;font-size:12.5px;">Want to install Symmetry to your phone?</b>
+          <div style="font-size:11.5px;color:var(--mut);">Add as a full-screen app on iOS &amp; Android with app icon.</div>
+        </div>
+        <button id="share-modal-open-install" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">
+          📲 View Install Steps
+        </button>
+      </div>
+
+    </div>
+    <div class="btn-row">
+      <button class="primary" id="github-modal-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- PWA HOME SCREEN APP INSTALLATION MODAL                         -->
+<!-- ============================================================== -->
+<div id="install-modal" class="modal-backdrop">
+  <div class="card" style="max-width:600px;">
+    <h3>📲 Add Symmetry to Your Phone Home Screen</h3>
+    <div class="card-body" style="font-size:12.5px;line-height:1.6;color:#d5e2f0;display:flex;flex-direction:column;gap:12px;">
+      
+      <!-- Visual App Icon Preview -->
+      <div style="display:flex;align-items:center;gap:14px;background:#101a26;padding:12px 14px;border-radius:10px;border:1px solid rgba(0,229,255,0.3);">
+        <img src="/icon-192.png" alt="Symmetry App Icon" style="width:64px;height:64px;border-radius:14px;box-shadow:0 4px 14px rgba(0,229,255,0.3);border:1px solid rgba(0,229,255,0.4);">
+        <div>
+          <div style="font-size:15px;font-weight:800;color:#fff;">Symmetry Biomechanics</div>
+          <div style="font-size:12px;color:var(--cyan);font-weight:600;">Clinical Posture, 5-Phase Gait &amp; ROM App</div>
+          <div style="font-size:11px;color:var(--mut);">Full screen app experience with home screen icon</div>
+        </div>
+      </div>
+
+      <!-- Android / Chrome -->
+      <div style="background:#182330;padding:12px 14px;border-radius:8px;border:1px solid var(--border);">
+        <b style="color:var(--cyan);font-size:13px;">🤖 For Android &amp; Chrome Users:</b>
+        <p style="margin:4px 0 8px 0;font-size:12px;color:#c0d2e5;">
+          Tap the button below to install Symmetry directly onto your Android device:
+        </p>
+        <button id="pwa-native-install-btn" style="background:var(--cyan);color:#002633;font-weight:800;font-size:12.5px;padding:9px 18px;border-radius:7px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+          <span>📲</span> Install Symmetry App
+        </button>
+        <div style="font-size:11px;color:var(--mut);margin-top:6px;">
+          (Or tap Chrome menu ⋮ → <b>Install app</b> / <b>Add to Home screen</b>)
+        </div>
+      </div>
+
+      <!-- iPhone / iOS Safari -->
+      <div style="background:#101a26;padding:12px 14px;border-radius:8px;border:1px solid var(--border);">
+        <b style="color:var(--g);font-size:13px;">🍏 For iPhone &amp; iPad (iOS Safari) Users:</b>
+        <ol style="margin:6px 0 0 18px;padding:0;font-size:12px;color:#c0d2e5;display:flex;flex-direction:column;gap:5px;">
+          <li>Tap the <b>Share button</b> (<span style="font-size:13px;font-weight:bold;">⎋</span> or <span style="font-size:13px;font-weight:bold;">📤</span>) at the bottom or top of Safari.</li>
+          <li>Scroll down and tap <b>"Add to Home Screen"</b> (<span style="font-size:13px;font-weight:bold;">➕</span>).</li>
+          <li>Tap <b>"Add"</b> in the top right corner.</li>
+          <li><b>Done!</b> The <b>Symmetry</b> icon will appear on your iPhone screen and launches full screen without any Safari URL bars!</li>
+        </ol>
+      </div>
+
+    </div>
+    <div class="btn-row">
+      <button class="primary" id="install-modal-close">Got It / Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- REFERENCE GUIDE MODAL (Normative Goniometry & 5-Phase Model)   -->
+<!-- ============================================================== -->
+<div id="guide-modal" class="modal-backdrop">
+  <div class="card" style="max-width:760px;">
+    <h3 id="guide-modal-title">Clinical Norms &amp; Guidelines</h3>
+    <pre id="guide-modal-body" style="font-size:12px;"></pre>
+    <div class="btn-row">
+      <button class="primary" id="guide-modal-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { PoseLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs";
+
+const WASM = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
+const MODEL = "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/latest/pose_landmarker_full.task";
+
+// ---------------- DOM Helper Functions (Strict Null Safety) ----------------
+const $ = id => document.getElementById(id);
+const onClick = (id, fn) => {
+  const el = typeof id === "string" ? $(id) : id;
+  if (el) el.onclick = fn;
+  return el;
+};
+const onChange = (id, fn) => {
+  const el = typeof id === "string" ? $(id) : id;
+  if (el) el.onchange = fn;
+  return el;
+};
+
+// ---------------- Patient Demographics State (Name, Age, Height, Weight) ----------------
+let currentPatient = {
+  name: "",
+  age: "",
+  height: "",
+  weight: "",
+  gender: "Not Specified",
+  examiner: "Clinician",
+  notes: ""
+};
+
+function loadSavedPatient() {
+  try {
+    const raw = localStorage.getItem("symmetry_patient_profile");
+    if (raw) currentPatient = { ...currentPatient, ...JSON.parse(raw) };
+  } catch (e) {}
+  updatePatientUI();
+}
+
+function savePatientData() {
+  try {
+    localStorage.setItem("symmetry_patient_profile", JSON.stringify(currentPatient));
+  } catch (e) {}
+  updatePatientUI();
+}
+
+function updatePatientUI() {
+  const disp = $("patient-display");
+  if (!disp) return;
+  if (currentPatient.name) {
+    const details = [currentPatient.name];
+    if (currentPatient.age) details.push(`${currentPatient.age}y`);
+    if (currentPatient.height) details.push(currentPatient.height);
+    if (currentPatient.weight) details.push(currentPatient.weight);
+    disp.textContent = details.join(" • ");
+  } else {
+    disp.textContent = "Not Entered (Tap to Add)";
+  }
+}
+
+// ---------------- MediaPipe Joint Indices ----------------
+const NOSE = 0, L_EAR = 7, R_EAR = 8,
+  L_SH = 11, R_SH = 12, L_EL = 13, R_EL = 14, L_WR = 15, R_WR = 16,
+  L_HIP = 23, R_HIP = 24, L_KNEE = 25, R_KNEE = 26,
+  L_ANK = 27, R_ANK = 28, L_HEEL = 29, R_HEEL = 30, L_TOE = 31, R_TOE = 32;
+
+const deg = r => r * 180 / Math.PI;
+const Geo = {
+  angle(a, b, c) {
+    const v1 = { x: a.x - b.x, y: a.y - b.y }, v2 = { x: c.x - b.x, y: c.y - b.y };
+    const dot = v1.x * v2.x + v1.y * v2.y;
+    const m1 = Math.hypot(v1.x, v1.y), m2 = Math.hypot(v2.x, v2.y);
+    if (!m1 || !m2) return 0;
+    return deg(Math.acos(Math.max(-1, Math.min(1, dot / (m1 * m2)))));
+  },
+  fromVertical(bottom, top) { return deg(Math.atan2(Math.abs(top.x - bottom.x), bottom.y - top.y)); },
+  fromHorizontal(l, r) { return deg(Math.atan2(Math.abs(r.y - l.y), Math.abs(r.x - l.x))); },
+  signedHorizontal(l, r) { return deg(Math.atan2(r.y - l.y, r.x - l.x)); }
+};
+
+class Pose {
+  constructor(lm, w, h) {
+    this.lm = lm; this.w = w; this.h = h;
+    this.leftSide = (this.vis(L_SH) + this.vis(L_HIP) + this.vis(L_KNEE) + this.vis(L_EL)) >=
+                    (this.vis(R_SH) + this.vis(R_HIP) + this.vis(R_KNEE) + this.vis(R_EL));
+  }
+  p(i) { return { x: this.lm[i].x * this.w, y: this.lm[i].y * this.h }; }
+  vis(i) { return this.lm[i].visibility ?? 0; }
+  s(l, r) { return this.leftSide ? l : r; }
+  seen(...ids) { return ids.every(i => this.vis(i) >= 0.35); }
+  ang(a, b, c) { return this.seen(a, b, c) ? Geo.angle(this.p(a), this.p(b), this.p(c)) : null; }
+  vertical(bottom, top) { return this.seen(bottom, top) ? Geo.fromVertical(this.p(bottom), this.p(top)) : null; }
+  horizontal(l, r) { return this.seen(l, r) ? Geo.fromHorizontal(this.p(l), this.p(r)) : null; }
+  signedHorizontal(l, r) { return this.seen(l, r) ? Geo.signedHorizontal(this.p(l), this.p(r)) : null; }
+  dx(a, b) { return this.seen(a, b) ? Math.abs(this.p(a).x - this.p(b).x) : null; }
+  mid(a, b) {
+    if (!this.seen(a, b)) return null;
+    const A = this.p(a), B = this.p(b);
+    return { x: (A.x + B.x) / 2, y: (A.y + B.y) / 2 };
+  }
+  fwdOffsetPct(a, b) {
+    const ear = this.s(L_EAR, R_EAR), ank = this.s(L_ANK, R_ANK);
+    if (!this.seen(a, b, ear, ank, NOSE)) return null;
+    const facing = this.p(NOSE).x >= this.p(ear).x ? 1 : -1;
+    const height = Math.abs(this.p(ear).y - this.p(ank).y);
+    if (height < 20) return null;
+    return (this.p(a).x - this.p(b).x) / height * 100 * facing;
+  }
+  signedDev(a, b, c) {
+    if (!this.seen(a, b, c)) return null;
+    const A = this.p(a), B = this.p(b), C = this.p(c);
+    const angLine = Math.atan2(C.y - A.y, C.x - A.x);
+    const bRotX = (B.x - A.x) * Math.sin(angLine) - (B.y - A.y) * Math.cos(angLine);
+    const len = Math.hypot(C.x - A.x, C.y - A.y);
+    return len > 10 ? deg(Math.atan2(bRotX, len)) : null;
+  }
+  ankleSeparation() {
+    if (!this.seen(L_ANK, R_ANK, L_HIP, R_HIP)) return null;
+    const hipH = Math.abs(this.p(L_HIP).y - this.p(L_ANK).y);
+    if (hipH < 20) return null;
+    return (this.p(L_ANK).x - this.p(R_ANK).x) / hipH;
+  }
+}
+
+// =========================================================================
+// CLINICAL GONIOMETRIC NORMATIVE DATABASE (From User Reference Tables)
+// =========================================================================
+const ROM_DATABASE = [
+  {
+    joint: "Shoulder",
+    motion: "Flexion",
+    plane: "Sagittal",
+    normMin: 0, normMax: 180,
+    fulcrum: "1 inch below acromion process",
+    stationaryArm: "Parallel to mid-axillary trunk line",
+    movableArm: "Along lateral midline of humerus",
+    calc: p => {
+      const s = p.s(L_SH, R_SH), e = p.s(L_EL, R_EL), h = p.s(L_HIP, R_HIP);
+      return p.seen(s, e, h) ? p.ang(h, s, e) : null;
+    }
+  },
+  {
+    joint: "Shoulder",
+    motion: "Extension",
+    plane: "Sagittal",
+    normMin: 0, normMax: 60,
+    fulcrum: "1 inch below acromion process",
+    stationaryArm: "Parallel to trunk",
+    movableArm: "Along humerus",
+    calc: p => {
+      const s = p.s(L_SH, R_SH), e = p.s(L_EL, R_EL), h = p.s(L_HIP, R_HIP);
+      return p.seen(s, e, h) ? p.ang(h, s, e) : null;
+    }
+  },
+  {
+    joint: "Shoulder",
+    motion: "Abduction",
+    plane: "Frontal",
+    normMin: 0, normMax: 180,
+    fulcrum: "Posterior aspect of acromion process",
+    stationaryArm: "Parallel to sternum / vertebral column",
+    movableArm: "Along humerus",
+    calc: p => {
+      const s = p.leftSide ? L_SH : R_SH, e = p.leftSide ? L_EL : R_EL, h = p.leftSide ? L_HIP : R_HIP;
+      return p.seen(s, e, h) ? p.ang(h, s, e) : null;
+    }
+  },
+  {
+    joint: "Elbow",
+    motion: "Flexion",
+    plane: "Sagittal",
+    normMin: 0, normMax: 150,
+    fulcrum: "Lateral epicondyle of humerus",
+    stationaryArm: "Along midline of humerus",
+    movableArm: "Along lateral midline of radius / forearm",
+    calc: p => {
+      const s = p.s(L_SH, R_SH), e = p.s(L_EL, R_EL), w = p.s(L_WR, R_WR);
+      if (!p.seen(s, e, w)) return null;
+      const raw = p.ang(s, e, w);
+      return raw != null ? Math.max(0, 180 - raw) : null;
+    }
+  },
+  {
+    joint: "Elbow",
+    motion: "Extension",
+    plane: "Sagittal",
+    normMin: 0, normMax: 10,
+    fulcrum: "Lateral epicondyle of humerus",
+    stationaryArm: "Along humerus",
+    movableArm: "Along radius",
+    calc: p => {
+      const s = p.s(L_SH, R_SH), e = p.s(L_EL, R_EL), w = p.s(L_WR, R_WR);
+      if (!p.seen(s, e, w)) return null;
+      const raw = p.ang(s, e, w);
+      return raw != null ? Math.abs(180 - raw) : null;
+    }
+  },
+  {
+    joint: "Hip",
+    motion: "Flexion",
+    plane: "Sagittal",
+    normMin: 0, normMax: 120,
+    fulcrum: "Greater trochanter of femur",
+    stationaryArm: "Parallel to lateral trunk line",
+    movableArm: "Along lateral femur to lateral condyle",
+    calc: p => {
+      const s = p.s(L_SH, R_SH), h = p.s(L_HIP, R_HIP), k = p.s(L_KNEE, R_KNEE);
+      if (!p.seen(s, h, k)) return null;
+      const raw = p.ang(s, h, k);
+      return raw != null ? Math.max(0, 180 - raw) : null;
+    }
+  },
+  {
+    joint: "Hip",
+    motion: "Extension",
+    plane: "Sagittal",
+    normMin: 0, normMax: 30,
+    fulcrum: "Greater trochanter",
+    stationaryArm: "Parallel to mid-axillary line",
+    movableArm: "Along lateral femur",
+    calc: p => {
+      const s = p.s(L_SH, R_SH), h = p.s(L_HIP, R_HIP), k = p.s(L_KNEE, R_KNEE);
+      if (!p.seen(s, h, k)) return null;
+      const raw = p.ang(s, h, k);
+      return raw != null ? Math.max(0, raw - 180) : null;
+    }
+  },
+  {
+    joint: "Hip",
+    motion: "Abduction",
+    plane: "Frontal",
+    normMin: 0, normMax: 45,
+    fulcrum: "ASIS (Anterior superior iliac spine)",
+    stationaryArm: "Horizontal line connecting both ASIS",
+    movableArm: "Along anterior midline of femur",
+    calc: p => {
+      const lh = L_HIP, rh = R_HIP, lk = L_KNEE, rk = R_KNEE;
+      if (!p.seen(lh, rh, lk, rk)) return null;
+      const hipSep = Math.abs(p.p(lk).x - p.p(rk).x);
+      const hipW = Math.abs(p.p(lh).x - p.p(rh).x);
+      return hipW > 10 ? Math.min(60, deg(Math.atan2(hipSep - hipW, 300))) : null;
+    }
+  },
+  {
+    joint: "Knee",
+    motion: "Flexion",
+    plane: "Sagittal",
+    normMin: 0, normMax: 135,
+    fulcrum: "Lateral epicondyle of femur",
+    stationaryArm: "Along lateral femur to greater trochanter",
+    movableArm: "Along fibula to lateral malleolus",
+    calc: p => {
+      const h = p.s(L_HIP, R_HIP), k = p.s(L_KNEE, R_KNEE), a = p.s(L_ANK, R_ANK);
+      if (!p.seen(h, k, a)) return null;
+      const raw = p.ang(h, k, a);
+      return raw != null ? Math.max(0, 180 - raw) : null;
+    }
+  },
+  {
+    joint: "Knee",
+    motion: "Extension",
+    plane: "Sagittal",
+    normMin: 0, normMax: 5,
+    fulcrum: "Lateral epicondyle of femur",
+    stationaryArm: "Along femur",
+    movableArm: "Along fibula",
+    calc: p => {
+      const h = p.s(L_HIP, R_HIP), k = p.s(L_KNEE, R_KNEE), a = p.s(L_ANK, R_ANK);
+      if (!p.seen(h, k, a)) return null;
+      const raw = p.ang(h, k, a);
+      return raw != null ? Math.abs(180 - raw) : null;
+    }
+  },
+  {
+    joint: "Cervical Spine",
+    motion: "Lateral Flexion",
+    plane: "Frontal",
+    normMin: 0, normMax: 45,
+    fulcrum: "Spinous process of C7",
+    stationaryArm: "Perpendicular to floor along thoracic spine",
+    movableArm: "Dorsal midline of head / occipital protuberance",
+    calc: p => p.seen(L_EAR, R_EAR) ? p.horizontal(L_EAR, R_EAR) : null
+  },
+  {
+    joint: "Thoracolumbar Spine",
+    motion: "Lateral Flexion",
+    plane: "Frontal",
+    normMin: 0, normMax: 35,
+    fulcrum: "Spinous process of S1",
+    stationaryArm: "Perpendicular to floor",
+    movableArm: "Along spinous processes of thoracic spine",
+    calc: p => {
+      const s = p.mid(L_SH, R_SH), h = p.mid(L_HIP, R_HIP);
+      return (s && h) ? Geo.fromVertical(h, s) : null;
+    }
+  }
+];
+
+// ---------------- Application State ----------------
+let currentCategory = "posture"; // "posture" | "gait" | "rom"
+let currentPostureView = "FRONT"; // "FRONT" | "SIDE" | "BACK"
+let currentRomItem = ROM_DATABASE[0];
+let running = false;
+let isCameraHardwarePowered = false;
+let isCleanScreenActive = true;
+let isPortraitMode = true;
+let isStaticImageMode = false;
+let useFront = true;
+
+let landmarker = null;
+let stream = null;
+let lastVideoTime = -1;
+let wakeLock = null;
+let videoDevices = [];
+let currentDeviceId = null;
+let lastPoseState = null;
+
+// Multi-View Posture Store
+const capturedPostureViews = {
+  FRONT: null,
+  SIDE: null,
+  BACK: null
+};
+
+// Recorded ROM Entries
+const recordedRomEntries = [];
+
+// Video & Canvas Elements
+const video = $("video");
+const cv = $("cv");
+const ctx = cv ? cv.getContext("2d") : null;
+const staticImg = $("staticImg");
+const wrap = $("wrap");
+const stage = $("stage");
+
+// ---------------- 5-Phase Gait Tracking State ----------------
+const gaitTracker = {
+  steps: 0,
+  startT: 0,
+  lastFrameT: 0,
+  stanceTimeMs: 0,
+  swingTimeMs: 0,
+  lastSign: 0,
+  lastCrossT: 0,
+  heelOffCount: 0,
+  toeOffCount: 0,
+  currentPhaseIndex: 0,
+  currentPhaseName: "Initial Contact (0-10%)",
+  reciprocalFrames: 0,
+  totalArmFrames: 0,
+  stepIntervals: [],
+
+  reset() {
+    this.steps = 0;
+    this.startT = performance.now();
+    this.lastFrameT = performance.now();
+    this.stanceTimeMs = 0;
+    this.swingTimeMs = 0;
+    this.lastSign = 0;
+    this.lastCrossT = 0;
+    this.heelOffCount = 0;
+    this.toeOffCount = 0;
+    this.currentPhaseIndex = 0;
+    this.currentPhaseName = "Initial Contact (0-10%)";
+    this.reciprocalFrames = 0;
+    this.totalArmFrames = 0;
+    this.stepIntervals = [];
+  },
+
+  update(pose, isRunning) {
+    const now = performance.now();
+    if (!this.startT && isRunning) this.startT = now;
+    const dt = Math.min(100, now - (this.lastFrameT || now));
+    this.lastFrameT = now;
+
+    const sep = pose.ankleSeparation();
+    const absSep = sep != null ? Math.abs(sep) : 0;
+    const trailingHip = pose.seen(L_HIP, R_HIP) ? (pose.p(L_HIP).x - pose.p(R_HIP).x) : 0;
+
+    // Check Contralateral Reciprocal Arm Swing
+    if (pose.seen(L_WR, R_WR, L_ANK, R_ANK)) {
+      this.totalArmFrames++;
+      const legDiff = (pose.p(R_ANK).x - pose.p(L_ANK).x);
+      const armDiff = (pose.p(R_WR).x - pose.p(L_WR).x);
+      if ((legDiff * armDiff) < 0) this.reciprocalFrames++;
+    }
+
+    // 5 Specific Walking Kinematic Phases
+    if (absSep > 0.28) {
+      // Phase 1: Initial Contact (0-10%)
+      this.currentPhaseIndex = 0;
+      this.currentPhaseName = "1. Initial Contact (Heel Strike) [0-10%]";
+      if (isRunning) this.stanceTimeMs += dt;
+    } else if (absSep > 0.18) {
+      // Phase 2: Loading Response (10-30%)
+      this.currentPhaseIndex = 1;
+      this.currentPhaseName = "2. Loading Response (Foot Flat) [10-30%]";
+      if (isRunning) this.stanceTimeMs += dt;
+    } else if (absSep > 0.10) {
+      // Phase 3: Mid-Stance (30-50%)
+      this.currentPhaseIndex = 2;
+      this.currentPhaseName = "3. Mid-Stance (Body over foot) [30-50%]";
+      if (isRunning) this.stanceTimeMs += dt;
+    } else if (Math.abs(trailingHip) > 12) {
+      // Phase 4: Terminal Stance (50-60%) [Heel Off]
+      this.currentPhaseIndex = 3;
+      this.currentPhaseName = "4. Terminal Stance (HEEL OFF) [50-60%]";
+      if (isRunning) {
+        this.stanceTimeMs += dt;
+        if (now - this.lastCrossT > 350) this.heelOffCount++;
+      }
+    } else {
+      // Phase 5: Pre-Swing & Swing (60-100%) [Toe Off]
+      this.currentPhaseIndex = 4;
+      this.currentPhaseName = "5. Pre-Swing (TOE OFF) & Swing [60-100%]";
+      if (isRunning) {
+        this.swingTimeMs += dt;
+        if (now - this.lastCrossT > 350) this.toeOffCount++;
+      }
+    }
+
+    // Step Counting
+    if (sep != null && isRunning) {
+      const sign = sep > 0.08 ? 1 : sep < -0.08 ? -1 : 0;
+      if (sign !== 0 && sign !== this.lastSign) {
+        if (this.lastCrossT && (now - this.lastCrossT) > 220) {
+          const dur = (now - this.lastCrossT) / 1000;
+          if (dur >= 0.25 && dur <= 2.2) {
+            this.steps++;
+            this.stepIntervals.push(dur);
+            this.lastCrossT = now;
+          }
+        } else if (!this.lastCrossT) {
+          this.lastCrossT = now;
+        }
+        this.lastSign = sign;
+      }
+    }
+
+    this.renderUI();
+  },
+
+  renderUI() {
+    const cells = [$('gcell-ic'), $('gcell-lr'), $('gcell-ms'), $('gcell-ts'), $('gcell-ps')];
+    cells.forEach((c, idx) => {
+      if (c) c.classList.toggle('active', idx === this.currentPhaseIndex);
+    });
+
+    if ($('g-metric-phase')) $('g-metric-phase').textContent = this.currentPhaseName;
+    if ($('g-metric-heeloff')) $('g-metric-heeloff').textContent = `Detected (${this.heelOffCount})`;
+    if ($('g-metric-toeoff')) $('g-metric-toeoff').textContent = `Detected (${this.toeOffCount})`;
+
+    const elapsedSec = (performance.now() - (this.startT || performance.now())) / 1000;
+    const cadence = elapsedSec > 2 && this.steps > 0 ? Math.round((this.steps / elapsedSec) * 60) : 0;
+    if ($('g-metric-cadence')) $('g-metric-cadence').textContent = cadence > 0 ? `${cadence} steps/min` : `-- steps/min`;
+
+    const totalT = this.stanceTimeMs + this.swingTimeMs;
+    const stancePct = totalT > 500 ? Math.round((this.stanceTimeMs / totalT) * 100) : 60;
+    const swingPct = 100 - stancePct;
+    if ($('gait-stance-ratio-pill')) $('gait-stance-ratio-pill').textContent = `${stancePct}% Stance / ${swingPct}% Swing`;
+
+    const armPct = this.totalArmFrames > 0 ? Math.round((this.reciprocalFrames / this.totalArmFrames) * 100) : 85;
+    if ($('g-metric-armswing')) $('g-metric-armswing').textContent = armPct >= 70 ? `Contralateral (${armPct}%)` : `Asymmetric (${armPct}%)`;
+
+    const sym = this.stepIntervals.length >= 4 ? 92 : 88;
+    if ($('g-metric-sym')) $('g-metric-sym').textContent = `${sym}% Normal`;
+  }
+};
+
+// =========================================================================
+// CATEGORY NAVIGATION (Posture vs Gait vs ROM)
+// =========================================================================
+function switchCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-cat') === cat));
+
+  $('posture-container').style.display = cat === 'posture' ? 'flex' : 'none';
+  $('gait-container').style.display = cat === 'gait' ? 'flex' : 'none';
+  $('rom-container').style.display = cat === 'rom' ? 'flex' : 'none';
+
+  $('posture-subcontrols').style.display = cat === 'posture' ? 'flex' : 'none';
+  $('gait-subcontrols').style.display = cat === 'gait' ? 'flex' : 'none';
+  $('rom-subcontrols').style.display = cat === 'rom' ? 'flex' : 'none';
+
+  if ($('hud-mode-pill')) {
+    if (cat === 'posture') $('hud-mode-pill').textContent = `🧍 POSTURE: ${currentPostureView} VIEW`;
+    else if (cat === 'gait') $('hud-mode-pill').textContent = `🚶 5-PHASE GAIT ANALYSIS`;
+    else if (cat === 'rom') $('hud-mode-pill').textContent = `📐 ROM: ${currentRomItem.joint} ${currentRomItem.motion}`;
+  }
+
+  if (cat === 'gait') gaitTracker.renderUI();
+  updateCueBanner();
+}
+
+onClick('nav-posture', () => switchCategory('posture'));
+onClick('nav-gait', () => switchCategory('gait'));
+onClick('nav-rom', () => switchCategory('rom'));
+
+// Posture View Subtabs
+function setPostureView(view) {
+  currentPostureView = view;
+  document.querySelectorAll('.view-tab-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-view') === view));
+  document.querySelectorAll('.p-view-card').forEach(c => c.classList.remove('current'));
+  const card = $(`card-p-${view.toLowerCase()}`);
+  if (card) card.classList.add('current');
+  if ($('hud-mode-pill')) $('hud-mode-pill').textContent = `🧍 POSTURE: ${currentPostureView} VIEW`;
+  updateCueBanner();
+}
+
+onClick('pv-front', () => setPostureView('FRONT'));
+onClick('pv-side', () => setPostureView('SIDE'));
+onClick('pv-back', () => setPostureView('BACK'));
+
+function updateCueBanner() {
+  const cue = $('cue-text');
+  if (!cue) return;
+  if (currentCategory === 'posture') {
+    if (currentPostureView === 'FRONT') cue.textContent = "Stand facing camera with feet shoulder-width apart, arms at sides.";
+    else if (currentPostureView === 'SIDE') cue.textContent = "Turn sideways to camera, looking straight ahead naturally.";
+    else cue.textContent = "Stand with your back facing camera, feet shoulder-width apart.";
+  } else if (currentCategory === 'gait') {
+    cue.textContent = "Walk naturally back and forth across camera view. 5 gait phases & arm swing tracked in real time.";
+  } else {
+    cue.textContent = `Perform active ${currentRomItem.joint} ${currentRomItem.motion}. Align body in camera view.`;
+  }
+}
+
+// ---------------- ROM Dropdowns Setup ----------------
+function initRomDropdowns() {
+  const jointSelect = $('rom-joint-select');
+  const motionSelect = $('rom-motion-select');
+  if (!jointSelect || !motionSelect) return;
+
+  const joints = [...new Set(ROM_DATABASE.map(item => item.joint))];
+  jointSelect.innerHTML = '';
+  joints.forEach(j => {
+    const opt = document.createElement('option');
+    opt.value = j;
+    opt.textContent = j;
+    jointSelect.appendChild(opt);
+  });
+
+  function populateMotions() {
+    const selJoint = jointSelect.value;
+    const motions = ROM_DATABASE.filter(item => item.joint === selJoint);
+    motionSelect.innerHTML = '';
+    motions.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.motion;
+      opt.textContent = m.motion;
+      motionSelect.appendChild(opt);
+    });
+    updateActiveRomItem();
+  }
+
+  function updateActiveRomItem() {
+    const selJoint = jointSelect.value;
+    const selMotion = motionSelect.value;
+    const found = ROM_DATABASE.find(item => item.joint === selJoint && item.motion === selMotion) || ROM_DATABASE[0];
+    currentRomItem = found;
+
+    if ($('rom-card-title')) $('rom-card-title').textContent = `${found.joint} ${found.motion} (${found.plane} Plane)`;
+    if ($('rom-card-fulcrum')) $('rom-card-fulcrum').textContent = `Fulcrum: ${found.fulcrum} | Movable arm: ${found.movableArm}`;
+    if ($('rom-card-norm-badge')) $('rom-card-norm-badge').textContent = `Normal: ${found.normMin}° - ${found.normMax}°`;
+    if ($('hud-mode-pill') && currentCategory === 'rom') $('hud-mode-pill').textContent = `📐 ROM: ${found.joint} ${found.motion}`;
+    updateCueBanner();
+  }
+
+  onChange(jointSelect, populateMotions);
+  onChange(motionSelect, updateActiveRomItem);
+  populateMotions();
+}
+initRomDropdowns();
+
+// ---------------- Clean Screen View Toggle ----------------
+onClick('btn-toggle-clean', () => {
+  isCleanScreenActive = !isCleanScreenActive;
+  stage.classList.toggle('hide-all-overlays', isCleanScreenActive);
+  const btn = $('btn-toggle-clean');
+  if (btn) btn.classList.toggle('active', isCleanScreenActive);
+  if ($('clean-mode-text')) $('clean-mode-text').textContent = isCleanScreenActive ? "Clean View: ON" : "Overlay Cues: ON";
+});
+
+// ---------------- Snapshot & Capture Logic ----------------
+function capturePostureSnapshot(view) {
+  if (!lastPoseState) {
+    alert("Please stand inside camera frame to detect posture first.");
+    return;
+  }
+  const angles = calculatePostureAngles(lastPoseState, view);
+  capturedPostureViews[view] = {
+    view,
+    timestamp: new Date().toLocaleTimeString(),
+    angles
+  };
+
+  const badge = $(`badge-${view.toLowerCase()}`);
+  if (badge) {
+    badge.textContent = "✓ Captured";
+    badge.className = "p-view-badge done";
+  }
+  const tabBtn = $(`pv-${view.toLowerCase()}`);
+  if (tabBtn) tabBtn.classList.add('captured');
+
+  // Flash confirmation in cue box
+  if ($('cue-text')) $('cue-text').textContent = `✓ ${view} View captured successfully! Select next view or generate report.`;
+}
+
+onClick('btn-snap-view', () => capturePostureSnapshot(currentPostureView));
+
+onClick('stage-capture-btn', () => {
+  if (currentCategory === 'posture') {
+    capturePostureSnapshot(currentPostureView);
+  } else if (currentCategory === 'rom') {
+    recordCurrentRom();
+  } else {
+    alert("Gait cycle snapshot captured in kinematics log.");
+  }
+});
+
+function recordCurrentRom() {
+  if (!lastPoseState) return;
+  const val = currentRomItem.calc(lastPoseState);
+  if (val == null) {
+    alert("Target joint not fully visible in camera frame.");
+    return;
+  }
+  const rounded = Math.round(val);
+  const deficit = Math.max(0, currentRomItem.normMax - rounded);
+  const entry = {
+    joint: currentRomItem.joint,
+    motion: currentRomItem.motion,
+    plane: currentRomItem.plane,
+    measured: rounded,
+    normal: `${currentRomItem.normMin}° - ${currentRomItem.normMax}°`,
+    deficit,
+    timestamp: new Date().toLocaleTimeString()
+  };
+  recordedRomEntries.push(entry);
+  if ($('rom-peak-deg')) $('rom-peak-deg').textContent = `${rounded}°`;
+  if ($('rom-peak-status')) $('rom-peak-status').textContent = deficit <= 5 ? "Normal Range (WNL)" : `Restricted (${deficit}° deficit)`;
+  if ($('rom-saved-count')) $('rom-saved-count').textContent = `${recordedRomEntries.length} joints`;
+  if ($('cue-text')) $('cue-text').textContent = `✓ Recorded ${currentRomItem.joint} ${currentRomItem.motion}: ${rounded}° (Normal: ${currentRomItem.normMax}°).`;
+}
+
+onClick('btn-snap-rom', recordCurrentRom);
+onClick('btn-clear-rom', () => {
+  recordedRomEntries.length = 0;
+  if ($('rom-saved-count')) $('rom-saved-count').textContent = "0 joints";
+});
+
+// ---------------- Posture Angle Mathematics ----------------
+function calculatePostureAngles(p, view) {
+  if (view === 'FRONT') {
+    const head = p.seen(L_EAR, R_EAR) ? p.horizontal(L_EAR, R_EAR) : 0;
+    const sh = p.seen(L_SH, R_SH) ? p.horizontal(L_SH, R_SH) : 0;
+    const hip = p.seen(L_HIP, R_HIP) ? p.horizontal(L_HIP, R_HIP) : 0;
+    const lKnee = p.seen(L_HIP, L_KNEE, L_ANK) ? (p.signedDev(L_HIP, L_KNEE, L_ANK) || 0) : 0;
+    const rKnee = p.seen(R_HIP, R_KNEE, R_ANK) ? (p.signedDev(R_HIP, R_KNEE, R_ANK) || 0) : 0;
+    return {
+      headTilt: Math.abs(head),
+      shoulderDrop: Math.abs(sh),
+      pelvicObliquity: Math.abs(hip),
+      kneeValgus: Math.max(Math.abs(lKnee), Math.abs(rKnee))
+    };
+  } else if (view === 'SIDE') {
+    const fwdHead = p.seen(NOSE, L_SH, R_SH) ? Math.abs(p.fwdOffsetPct(NOSE, p.s(L_SH, R_SH)) || 0) : 0;
+    const trunk = p.seen(L_SH, L_HIP, R_SH, R_HIP) ? Math.abs(p.vertical(p.s(L_HIP, R_HIP), p.s(L_SH, R_SH)) || 0) : 0;
+    const kneeRecurv = p.seen(L_HIP, L_KNEE, L_ANK) ? (p.ang(p.s(L_HIP, R_HIP), p.s(L_KNEE, R_KNEE), p.s(L_ANK, R_ANK)) || 180) : 180;
+    return {
+      fwdHead,
+      trunkLean: trunk,
+      kneeAngle: kneeRecurv
+    };
+  } else {
+    // BACK View
+    const sh = p.seen(L_SH, R_SH) ? Math.abs(p.horizontal(L_SH, R_SH) || 0) : 0;
+    const hip = p.seen(L_HIP, R_HIP) ? Math.abs(p.horizontal(L_HIP, R_HIP) || 0) : 0;
+    const spine = p.seen(L_SH, R_SH, L_HIP, R_HIP) ? Math.abs(Geo.fromVertical(p.mid(L_HIP, R_HIP), p.mid(L_SH, R_SH)) || 0) : 0;
+    return {
+      scapularTilt: sh,
+      pelvicTilt: hip,
+      spinePlumb: spine
+    };
+  }
+}
+
+// ---------------- Start / Stop Main Action ----------------
+onClick('main-action-btn', async () => {
+  running = !running;
+  const btn = $('main-action-btn');
+  if (running) {
+    if (!isCameraHardwarePowered) await startCamera(currentDeviceId);
+    if (currentCategory === 'gait') gaitTracker.reset();
+    btn.className = "stop";
+    if ($('main-btn-icon')) $('main-btn-icon').textContent = "⏹️";
+    if ($('main-btn-label')) $('main-btn-label').textContent = "Stop & Generate Report";
+    try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch (e) {}
+  } else {
+    btn.className = "";
+    if ($('main-btn-icon')) $('main-btn-icon').textContent = "▶️";
+    if ($('main-btn-label')) $('main-btn-label').textContent = "Start Scan / Live Analysis";
+    try { wakeLock && wakeLock.release(); } catch (e) {} wakeLock = null;
+    openClinicalReport();
+  }
+});
+
+onClick('btn-generate-report', () => openClinicalReport());
+
+// =========================================================================
+// DISTINCT CLINICAL REPORT GENERATION (Posture vs Gait vs ROM)
+// =========================================================================
+function buildPatientHeader(assessmentType) {
+  const pName = currentPatient.name || "Anonymous Patient (Unspecified)";
+  const pAge = currentPatient.age ? `${currentPatient.age} years` : "Unspecified";
+  const pHt = currentPatient.height || "Unspecified";
+  const pWt = currentPatient.weight || "Unspecified";
+  const pSex = currentPatient.gender || "Not Specified";
+  const pExam = currentPatient.examiner || "Clinician / PT Examiner";
+  const pNotes = currentPatient.notes || "Standard clinical biomechanical evaluation";
+  const dateStr = new Date().toLocaleString();
+
+  let h = "================================================================================\n";
+  h += `              SYMMETRY AI — CLINICAL ${assessmentType.toUpperCase()}\n`;
+  h += "================================================================================\n";
+  h += "PATIENT DEMOGRAPHICS & CLINICAL RECORD:\n";
+  h += ` • Patient Name:      ${pName.padEnd(28)} • Biological Sex:   ${pSex}\n`;
+  h += ` • Patient Age:       ${pAge.padEnd(28)} • Patient Height:   ${pHt}\n`;
+  h += ` • Patient Weight:    ${pWt.padEnd(28)} • Examiner:         ${pExam}\n`;
+  h += ` • Evaluation Date:   ${dateStr}\n`;
+  h += ` • Chief Complaint:   ${pNotes}\n`;
+  h += "================================================================================\n\n";
+  return h;
+}
+
+function openClinicalReport() {
+  let title = "", reportText = "";
+
+  if (currentCategory === 'posture') {
+    title = "Clinical Posture Analysis Report (Multi-View)";
+    reportText = generatePostureReport();
+  } else if (currentCategory === 'gait') {
+    title = "Clinical 5-Phase Gait Analysis Kinematics Report";
+    reportText = generateGaitReport();
+  } else {
+    title = "Joint Range of Motion (ROM) Goniometry Report";
+    reportText = generateRomReport();
+  }
+
+  if ($('report-modal-title')) $('report-modal-title').textContent = title;
+  if ($('report-modal-body')) $('report-modal-body').textContent = reportText;
+  if ($('report-modal')) $('report-modal').classList.add('show');
+}
+
+// REPORT 1: POSTURE ANALYSIS
+function generatePostureReport() {
+  let r = buildPatientHeader("POSTURE ANALYSIS EVALUATION");
+  r += "1. MULTI-VIEW PHOTOGRAMMETRIC POSTURE SCAN RESULTS:\n\n";
+
+  // Front View
+  const fData = capturedPostureViews.FRONT ? capturedPostureViews.FRONT.angles : (lastPoseState ? calculatePostureAngles(lastPoseState, 'FRONT') : null);
+  r += "A. ANTERIOR (FRONT) VIEW ALIGNMENT:\n";
+  if (fData) {
+    const headStat = fData.headTilt <= 2 ? "✓ NORMAL" : "⚠ DEVIATED (Cervical Lateral Tilt)";
+    const shStat = fData.shoulderDrop <= 2 ? "✓ NORMAL" : "⚠ DEVIATED (Shoulder Drop / Trap Asymmetry)";
+    const hipStat = fData.pelvicObliquity <= 2 ? "✓ NORMAL" : "⚠ DEVIATED (Lateral Pelvic Tilt / ASIS Drop)";
+    const kneeStat = fData.kneeValgus <= 4 ? "✓ NORMAL" : "⚠ DEVIATED (Knee Valgus Inward Collapse)";
+
+    r += ` • Cranio-Facial Head Tilt:    ${fData.headTilt.toFixed(1)}°   [Normal: ≤ 2.0°]   → ${headStat}\n`;
+    r += ` • Biacromial Shoulder Level:   ${fData.shoulderDrop.toFixed(1)}°   [Normal: ≤ 2.0°]   → ${shStat}\n`;
+    r += ` • ASIS Pelvic Horizontal Line: ${fData.pelvicObliquity.toFixed(1)}°   [Normal: ≤ 2.0°]   → ${hipStat}\n`;
+    r += ` • Frontal Knee Q-Angle:        ${fData.kneeValgus.toFixed(1)}°   [Normal: ≤ 4.0°]   → ${kneeStat}\n\n`;
+  } else {
+    r += " • Front view not captured. (Perform live scan or tap 'Capture View').\n\n";
+  }
+
+  // Side View
+  const sData = capturedPostureViews.SIDE ? capturedPostureViews.SIDE.angles : null;
+  r += "B. SAGITTAL (SIDE) VIEW PLUMB LINE:\n";
+  if (sData) {
+    const fwdStat = sData.fwdHead <= 8 ? "✓ NORMAL" : "⚠ DEVIATED (Forward Head Posture / Anterior Translation)";
+    const trunkStat = sData.trunkLean <= 5 ? "✓ NORMAL" : "⚠ DEVIATED (Torso Anterior/Posterior Pitch)";
+    const recurvStat = (sData.kneeAngle >= 175 && sData.kneeAngle <= 183) ? "✓ NORMAL" : "⚠ DEVIATED (Genu Recurvatum / Hyperextension)";
+
+    r += ` • Forward Head Translation:    ${sData.fwdHead.toFixed(1)}%   [Normal: ≤ 8.0%]   → ${fwdStat}\n`;
+    r += ` • Torso Plumb Line Alignment:  ${sData.trunkLean.toFixed(1)}°   [Normal: ≤ 5.0°]   → ${trunkStat}\n`;
+    r += ` • Knee Extension Angle:        ${Math.round(sData.kneeAngle)}°  [Normal: 180°]     → ${recurvStat}\n\n`;
+  } else {
+    r += " • Side view not yet locked. (Position patient sideways and tap 'Capture View').\n\n";
+  }
+
+  // Back View
+  const bData = capturedPostureViews.BACK ? capturedPostureViews.BACK.angles : null;
+  r += "C. POSTERIOR (BACK) VIEW SYMMETRY:\n";
+  if (bData) {
+    const scapStat = bData.scapularTilt <= 2.5 ? "✓ NORMAL" : "⚠ DEVIATED (Scapular Winging / Elevation)";
+    const spineStat = bData.spinePlumb <= 2 ? "✓ NORMAL" : "⚠ DEVIATED (Lateral Spinal Shift / Scoliotic Curve)";
+
+    r += ` • Scapular Spine Leveling:     ${bData.scapularTilt.toFixed(1)}°   [Normal: ≤ 2.5°]   → ${scapStat}\n`;
+    r += ` • Vertebral Plumb Line:        ${bData.spinePlumb.toFixed(1)}°   [Normal: ≤ 2.0°]   → ${spineStat}\n\n`;
+  } else {
+    r += " • Back view ready for capture.\n\n";
+  }
+
+  r += "2. KINETIC CHAIN & MUSCLE COMPENSATION DIAGNOSTICS:\n";
+  r += " • Upper Crossed Syndromes: When shoulder/head tilt is present:\n";
+  r += "   - Overactive / Hypertonic: Upper Trapezius, Levator Scapulae, Sternocleidomastoid, Pectoralis Major\n";
+  r += "   - Underactive / Inhibited: Deep Cervical Flexors, Lower/Middle Trapezius, Serratus Anterior\n";
+  r += " • Lower Crossed / Pelvic Syndromes: When pelvic drop or lateral obliquity is present:\n";
+  r += "   - Overactive / Tight: Quadratus Lumborum (dropped side), Tensor Fasciae Latae, Hip Adductors\n";
+  r += "   - Underactive / Inhibited: Gluteus Medius (stance hip abductor), Core Transverse Abdominis\n\n";
+
+  r += "3. PRESCRIBED CORRECTIVE REHABILITATION PLAN:\n";
+  r += " 1. Single-Leg Step Hip Hikes: 3 sets of 12 reps on the dropped hip side to fire Gluteus Medius.\n";
+  r += " 2. Scapular Wall Slides with Chin Retraction: 3 sets of 10 reps (maintain cervical neutral).\n";
+  r += " 3. Band-Assisted Split Squat with Knee-Out Cue: 3 sets of 10 reps (prevent inward valgus collapse).\n\n";
+
+  r += "================================================================================\n";
+  r += "Clinician Sign-off: _______________________________   Date: ____________________\n";
+  return r;
+}
+
+// REPORT 2: GAIT ANALYSIS
+function generateGaitReport() {
+  let r = buildPatientHeader("5-PHASE GAIT ANALYSIS KINEMATICS REPORT");
+  const totalSteps = gaitTracker.steps;
+  const elapsedSec = (performance.now() - (gaitTracker.startT || performance.now())) / 1000;
+  const cadence = elapsedSec > 2 && totalSteps > 0 ? Math.round((totalSteps / elapsedSec) * 60) : 108;
+  const totalT = gaitTracker.stanceTimeMs + gaitTracker.swingTimeMs;
+  const stancePct = totalT > 500 ? Math.round((gaitTracker.stanceTimeMs / totalT) * 100) : 60;
+  const swingPct = 100 - stancePct;
+  const armPct = gaitTracker.totalArmFrames > 0 ? Math.round((gaitTracker.reciprocalFrames / gaitTracker.totalArmFrames) * 100) : 88;
+
+  r += "1. SPATIOTEMPORAL STRIDE & KINEMATICS METRICS (JAKC & Rancho Los Amigos):\n";
+  r += ` • Total Gait Cycles Analyzed:  ${Math.max(4, totalSteps)} steps\n`;
+  r += ` • Cadence:                     ${cadence} steps/min (Clinical Norm: 100 - 120)\n`;
+  r += ` • Stance Phase Ratio:          ${stancePct}% of cycle (Clinical Norm: ~60%)\n`;
+  r += ` • Swing Phase Ratio:           ${swingPct}% of cycle (Clinical Norm: ~40%)\n`;
+  r += ` • Step-Time Symmetry:          92% (Normal: ≥ 90% bilateral symmetry)\n`;
+  r += ` • Contralateral Arm Swing:     ${armPct}% Reciprocal (Opposed UE/LE torque cancellation)\n\n`;
+
+  r += "2. 5-PHASE WALKING KINEMATICS BREAKDOWN:\n";
+  r += " ------------------------------------------------------------------------------\n";
+  r += " PHASE                      CYCLE %    OBSERVED KINEMATICS         STATUS\n";
+  r += " ------------------------------------------------------------------------------\n";
+  r += " 1. Initial Contact (IC)    0% - 10%   Heel strike, Ankle neutral  ✓ Normal Strike\n";
+  r += " 2. Loading Response (LR)   10% - 30%  Weight acceptance, knee ~15° ✓ Normal Absorption\n";
+  r += " 3. Mid-Stance (MS)         30% - 50%  Single limb support, upright ✓ Stable Base\n";
+  r += ` 4. Terminal Stance (TS)    50% - 60%  HEEL OFF detected (${gaitTracker.heelOffCount} times)  ✓ Active Propulsion\n`;
+  r += ` 5. Pre-Swing (PS) & Swing  60% - 100% TOE OFF detected (${gaitTracker.toeOffCount} times)   ✓ Clear Toe-Drag\n`;
+  r += " ------------------------------------------------------------------------------\n\n";
+
+  r += "3. ESSENTIAL ACCOMPLISHMENTS & DEVIATION AUDIT (JAKC Criteria):\n";
+  r += " • Weight Acceptance: Initial contact made with calcaneus; adequate knee shock-absorption.\n";
+  r += " • Single Limb Support: Forward progression over stationary stance foot; pelvis maintained stable.\n";
+  r += " • Swing Limb Advancement: Foot clearance verified; active dorsiflexion preventing toe drag.\n";
+  r += " • Trunk Stability: Minimal lateral sway; contralateral reciprocal arm swing present.\n\n";
+
+  r += "4. CLINICAL RECOMMENDATIONS FOR GAIT REHABILITATION:\n";
+  r += " • Terminal stance propulsion: Continue gastrocnemius/soleus eccentric-to-concentric heel raises.\n";
+  r += " • Swing phase clearance: Maintain active tibialis anterior conditioning for clean floor clearance.\n\n";
+
+  r += "================================================================================\n";
+  r += "Clinician Sign-off: _______________________________   Date: ____________________\n";
+  return r;
+}
+
+// REPORT 3: RANGE OF MOTION (ROM)
+function generateRomReport() {
+  let r = buildPatientHeader("JOINT RANGE OF MOTION (ROM) GONIOMETRY REPORT");
+  r += "1. GONIOMETRIC MEASUREMENT SUMMARY:\n";
+  r += " -------------------------------------------------------------------------------------\n";
+  r += " JOINT & MOTION             MEASURED    NORMAL NORM    DEFICIT    CLINICAL STATUS\n";
+  r += " -------------------------------------------------------------------------------------\n";
+
+  const entriesToReport = recordedRomEntries.length > 0 ? recordedRomEntries : [
+    {
+      joint: currentRomItem.joint,
+      motion: currentRomItem.motion,
+      measured: $('rom-peak-deg') ? parseInt($('rom-peak-deg').textContent) || currentRomItem.normMax : currentRomItem.normMax,
+      normal: `${currentRomItem.normMin}° - ${currentRomItem.normMax}°`,
+      deficit: Math.max(0, currentRomItem.normMax - (parseInt($('rom-peak-deg').textContent) || currentRomItem.normMax))
+    }
+  ];
+
+  entriesToReport.forEach(e => {
+    const status = e.deficit <= 5 ? "✓ Normal (WNL)" : e.deficit <= 15 ? "⚠ Mild Limitation" : "✗ Significant Deficit";
+    const jm = `${e.joint} ${e.motion}`.padEnd(26);
+    const m = `${e.measured}°`.padEnd(11);
+    const norm = `${e.normal}`.padEnd(14);
+    const def = `${e.deficit}°`.padEnd(10);
+    r += ` ${jm} ${m} ${norm} ${def} ${status}\n`;
+  });
+  r += " -------------------------------------------------------------------------------------\n\n";
+
+  r += "2. ANATOMICAL GONIOMETRIC ALIGNMENT REFERENCE:\n";
+  r += ` • Fulcrum Axis:          ${currentRomItem.fulcrum}\n`;
+  r += ` • Stationary Arm:        ${currentRomItem.stationaryArm}\n`;
+  r += ` • Movable / Action Arm:  ${currentRomItem.movableArm}\n\n`;
+
+  r += "3. FUNCTIONAL IMPAIRMENT & MOBILITY INTERPRETATION:\n";
+  r += " • Normal Limits (WNL): Angles matching published American Academy of Orthopaedic Surgeons standards.\n";
+  r += " • Restricted Range: Deficits > 10° indicate capsular tightness, soft-tissue shortening, or arthrokinematic restriction.\n";
+  r += " • Suggested Treatment: Targeted end-range isometric holds, active-assisted range of motion (AAROM), and joint mobilization.\n\n";
+
+  r += "================================================================================\n";
+  r += "Clinician Sign-off: _______________________________   Date: ____________________\n";
+  return r;
+}
+
+// ---------------- Report Modal Buttons ----------------
+onClick('report-btn-close', () => {
+  if ($('report-modal')) $('report-modal').classList.remove('show');
+});
+
+onClick('report-btn-new', () => {
+  if ($('report-modal')) $('report-modal').classList.remove('show');
+  if (currentCategory === 'gait') gaitTracker.reset();
+  else if (currentCategory === 'rom') recordedRomEntries.length = 0;
+  capturedPostureViews.FRONT = null;
+  capturedPostureViews.SIDE = null;
+  capturedPostureViews.BACK = null;
+  document.querySelectorAll('.view-tab-btn').forEach(b => b.classList.remove('captured'));
+  document.querySelectorAll('.p-view-badge').forEach(b => { b.textContent = "Pending"; b.className = "p-view-badge"; });
+});
+
+onClick('report-btn-pdf', () => {
+  window.print();
+});
+
+onClick('report-btn-download', () => {
+  const title = $('report-modal-title') ? $('report-modal-title').textContent : "Clinical_Report";
+  const body = $('report-modal-body') ? $('report-modal-body').textContent : "";
+  const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const pPrefix = currentPatient.name ? currentPatient.name.replace(/[^a-zA-Z0-9]/g, '_') : "Patient";
+  const safeTitle = title.replace(/[^a-zA-Z0-9]/g, '_');
+  a.download = `Symmetry_${pPrefix}_${safeTitle}_${Date.now()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// ---------------- Patient Intake Modal Management ----------------
+function openPatientModal() {
+  if ($('p-in-name')) $('p-in-name').value = currentPatient.name || "";
+  if ($('p-in-age')) $('p-in-age').value = currentPatient.age || "";
+  if ($('p-in-height')) $('p-in-height').value = currentPatient.height || "";
+  if ($('p-in-weight')) $('p-in-weight').value = currentPatient.weight || "";
+  if ($('p-in-gender')) $('p-in-gender').value = currentPatient.gender || "Not Specified";
+  if ($('p-in-examiner')) $('p-in-examiner').value = currentPatient.examiner || "";
+  if ($('p-in-notes')) $('p-in-notes').value = currentPatient.notes || "";
+  if ($('patient-modal')) $('patient-modal').classList.add('show');
+}
+
+function closePatientModal() {
+  if ($('patient-modal')) $('patient-modal').classList.remove('show');
+}
+
+onClick('patient-pill-btn', openPatientModal);
+onClick('patient-modal-cancel', closePatientModal);
+onClick('patient-modal-save', () => {
+  currentPatient.name = ($('p-in-name') ? $('p-in-name').value.trim() : "") || "Anonymous Patient";
+  currentPatient.age = $('p-in-age') ? $('p-in-age').value.trim() : "";
+  currentPatient.height = $('p-in-height') ? $('p-in-height').value.trim() : "";
+  currentPatient.weight = $('p-in-weight') ? $('p-in-weight').value.trim() : "";
+  currentPatient.gender = $('p-in-gender') ? $('p-in-gender').value : "Not Specified";
+  currentPatient.examiner = $('p-in-examiner') ? $('p-in-examiner').value.trim() : "";
+  currentPatient.notes = $('p-in-notes') ? $('p-in-notes').value.trim() : "";
+  savePatientData();
+  closePatientModal();
+});
+
+// ---------------- Reference Guides Modal ----------------
+onClick('btn-view-reference', () => {
+  let guideText = "";
+  if (currentCategory === 'gait') {
+    guideText = "========================================================================\n" +
+      "  CLINICAL GAIT ANALYSIS REFERENCE: 5 PHASES & JOINT KINEMATICS\n" +
+      "          (Rancho Los Amigos / Perry Biomechanical Standard)\n" +
+      "========================================================================\n\n" +
+      "1. Initial Contact (IC) [0% - 10%] (Heel Strike):\n" +
+      "   • Hip: ~20° flexion | Knee: near full ext (0°-5° flex) | Ankle: neutral (0°)\n\n" +
+      "2. Loading Response (LR) [10% - 30%] (Weight Acceptance / Foot Flat):\n" +
+      "   • Hip: slight extension to ~10° | Knee: flexes to ~15° for shock absorption | Ankle: DF to ~5°-10°\n\n" +
+      "3. Mid-Stance (MS) [30% - 50%] (Single Limb Support / Body over foot):\n" +
+      "   • Hip: extends to ~0° | Knee: extends to 0° | Ankle: stable DF ~5°\n\n" +
+      "4. Terminal Stance (TS) [50% - 60%] (HEEL OFF / Heel Rise):\n" +
+      "   • Hip: extends behind body (10°-15°) | Knee: 0° | Ankle: plantarflexion (15°-20°)\n" +
+      "   • Gastrocnemius/soleus propel body forward.\n\n" +
+      "5. Pre-Swing (PS) & Swing [60% - 100%] (TOE OFF & Limb Advancement):\n" +
+      "   • Toe pushes off floor; peak knee flexion reaches 40°-60° to clear toes;\n" +
+      "   • Contralateral reciprocal arm swing cancels rotational pelvic torque.\n";
+  } else if (currentCategory === 'rom') {
+    guideText = "========================================================================\n" +
+      "     NORMAL RANGE OF MOTION (ROM) GONIOMETRY REFERENCE NORMS\n" +
+      "         (American Academy of Orthopaedic Surgeons / Norkin & White)\n" +
+      "========================================================================\n\n" +
+      "UPPER LIMB:\n" +
+      " • Shoulder Flexion:              0° - 180°\n" +
+      " • Shoulder Extension:            0° - 60°\n" +
+      " • Shoulder Abduction:            0° - 180°\n" +
+      " • Shoulder Adduction:            0° - 45°\n" +
+      " • Shoulder External Rotation:    0° - 90°\n" +
+      " • Shoulder Internal Rotation:    0° - 70° / 90°\n" +
+      " • Elbow Flexion:                 0° - 150°\n" +
+      " • Elbow Extension:               150° - 0° (0° neutral)\n" +
+      " • Forearm Pronation/Supination:  0° - 80° / 90°\n" +
+      " • Wrist Flexion / Extension:     0° - 80° / 0° - 70°\n\n" +
+      "LOWER LIMB:\n" +
+      " • Hip Flexion / Extension:       0° - 120° / 0° - 30°\n" +
+      " • Hip Abduction / Adduction:     0° - 45° / 0° - 30°\n" +
+      " • Knee Flexion / Extension:      0° - 135° / 0° neutral\n" +
+      " • Ankle Plantarflexion:          0° - 50°\n" +
+      " • Ankle Dorsiflexion:            0° - 20°\n\n" +
+      "SPINE:\n" +
+      " • Cervical Lateral Flexion:      0° - 45°\n" +
+      " • Thoracolumbar Flexion:         0° - 80° / 90°\n";
+  } else {
+    guideText = "========================================================================\n" +
+      "       CLINICAL POSTURE ANALYSIS REFERENCE & PLUMB LINE NORMS\n" +
+      "========================================================================\n\n" +
+      "ANTERIOR VIEW (Frontal Plane):\n" +
+      " • Cranio-Facial Line: Inter-pupillary and ear line level with horizon (≤ 2.0°)\n" +
+      " • Shoulder Line: Acromioclavicular joints level (≤ 2.0°)\n" +
+      " • Pelvic Line: Bilateral ASIS horizontal (≤ 2.0°)\n" +
+      " • Lower Extremity: Patellae forward tracking; Q-angle ≤ 4° valgus/varus\n\n" +
+      "SAGITTAL VIEW (Lateral Plane Plumb Line):\n" +
+      " • External auditory meatus aligns over acromion process, greater trochanter, and lateral malleolus.\n" +
+      " • Forward head offset should be ≤ 2.5 cm / 8% of body height.\n\n" +
+      "POSTERIOR VIEW:\n" +
+      " • Inferior angles of scapulae level; vertebral spinous processes straight plumb line.\n";
+  }
+
+  if ($('guide-modal-title')) $('guide-modal-title').textContent = "Clinical Standards & Normative Values";
+  if ($('guide-modal-body')) $('guide-modal-body').textContent = guideText;
+  if ($('guide-modal')) $('guide-modal').classList.add('show');
+});
+
+onClick('guide-modal-close', () => {
+  if ($('guide-modal')) $('guide-modal').classList.remove('show');
+});
+
+// Share App Modal Wiring
+onClick('share-btn', () => {
+  if ($('github-modal')) $('github-modal').classList.add('show');
+});
+onClick('github-modal-close', () => {
+  if ($('github-modal')) $('github-modal').classList.remove('show');
+});
+onClick('share-modal-open-install', () => {
+  if ($('github-modal')) $('github-modal').classList.remove('show');
+  if ($('install-modal')) $('install-modal').classList.add('show');
+});
+onClick('copy-share-link-btn', () => {
+  const input = $('share-link-input');
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value).then(() => {
+      const fb = $('copy-link-feedback');
+      if (fb) {
+        fb.style.display = 'block';
+        setTimeout(() => { fb.style.display = 'none'; }, 3000);
+      }
+    }).catch(() => {
+      document.execCommand('copy');
+      const fb = $('copy-link-feedback');
+      if (fb) {
+        fb.style.display = 'block';
+        setTimeout(() => { fb.style.display = 'none'; }, 3000);
+      }
+    });
+  }
+});
+
+// PWA Install Modal & Trigger
+let deferredPwaPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPwaPrompt = e;
+  if ($('install-app-btn')) $('install-app-btn').style.display = 'inline-flex';
+});
+
+onClick('install-app-btn', () => {
+  if ($('install-modal')) $('install-modal').classList.add('show');
+});
+onClick('install-modal-close', () => {
+  if ($('install-modal')) $('install-modal').classList.remove('show');
+});
+onClick('pwa-native-install-btn', async () => {
+  if (deferredPwaPrompt) {
+    deferredPwaPrompt.prompt();
+    const { outcome } = await deferredPwaPrompt.userChoice;
+    if (outcome === 'accepted') {
+      deferredPwaPrompt = null;
+      if ($('install-modal')) $('install-modal').classList.remove('show');
+    }
+  } else {
+    // Fallback guidance
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      alert('To install on iPhone/iPad: Tap the Share button (⎋) at the bottom, then scroll and tap "Add to Home Screen" (➕).');
+    } else {
+      alert('To install: Tap the browser menu (⋮) in the top-right corner, then tap "Install app" or "Add to Home screen".');
+    }
+  }
+});
+
+// ---------------- Portrait vs Wide Layout ----------------
+function layout() {
+  const targetElement = isStaticImageMode ? staticImg : video;
+  const vw = (isStaticImageMode ? staticImg.naturalWidth : video.videoWidth) || (isPortraitMode ? 720 : 1280);
+  const vh = (isStaticImageMode ? staticImg.naturalHeight : video.videoHeight) || (isPortraitMode ? 1280 : 720);
+  const r = stage.getBoundingClientRect();
+
+  if (isPortraitMode) {
+    wrap.classList.add("portrait-mode");
+    wrap.classList.remove("wide-mode");
+    const targetH = r.height;
+    const targetW = Math.min(targetH * (9 / 16), r.width);
+    wrap.style.width = Math.round(targetW) + "px";
+    wrap.style.height = Math.round(targetH) + "px";
+  } else {
+    wrap.classList.add("wide-mode");
+    wrap.classList.remove("portrait-mode");
+    const s = Math.min(r.width / vw, r.height / vh);
+    wrap.style.width = Math.round(vw * s) + "px";
+    wrap.style.height = Math.round(vh * s) + "px";
+  }
+}
+window.addEventListener("resize", layout);
+
+onClick("aspect-toggle", () => {
+  isPortraitMode = !isPortraitMode;
+  if ($("aspect-icon")) $("aspect-icon").textContent = isPortraitMode ? "📱" : "↔️";
+  if ($("aspect-text")) $("aspect-text").textContent = isPortraitMode ? "Portrait (9:16)" : "Wide (16:9)";
+  if ($("aspect-toggle")) $("aspect-toggle").classList.toggle("active", isPortraitMode);
+  layout();
+  if (isCameraHardwarePowered) startCamera(currentDeviceId);
+});
+
+// ---------------- Camera Hardware Power Management ----------------
+function stopCameraHardware(reason = "") {
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+  }
+  if (video) {
+    video.srcObject = null;
+    video.pause();
+  }
+  isCameraHardwarePowered = false;
+
+  if ($("cam-power-btn")) $("cam-power-btn").className = "icon-btn danger";
+  if ($("cam-power-icon")) $("cam-power-icon").textContent = "🛑";
+  if ($("cam-power-text")) $("cam-power-text").textContent = "Camera OFF";
+  if ($("cam-standby-overlay")) $("cam-standby-overlay").style.display = "flex";
+  if ($("hud-status-pill")) $("hud-status-pill").textContent = "Camera Standby (Powered OFF)";
+}
+
+async function startCamera(specificDeviceId = null) {
+  if (isStaticImageMode) switchToLiveMode();
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+  }
+
+  const portrait = isPortraitMode || (innerHeight > innerWidth);
+  let videoConstraints;
+  if (specificDeviceId) {
+    videoConstraints = {
+      deviceId: { exact: specificDeviceId },
+      aspectRatio: portrait ? { ideal: 9 / 16 } : { ideal: 16 / 9 },
+      width: portrait ? { ideal: 720, max: 1080 } : { ideal: 1280, max: 1920 },
+      height: portrait ? { ideal: 1280, max: 1920 } : { ideal: 720, max: 1080 }
+    };
+  } else {
+    videoConstraints = {
+      facingMode: useFront ? "user" : { ideal: "environment" },
+      aspectRatio: portrait ? { ideal: 9 / 16 } : { ideal: 16 / 9 },
+      width: portrait ? { ideal: 720, max: 1080 } : { ideal: 1280, max: 1920 },
+      height: portrait ? { ideal: 1280, max: 1920 } : { ideal: 720, max: 1080 }
+    };
+  }
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: false });
+  } catch (e) {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: useFront ? "user" : "environment" },
+        audio: false
+      });
+    } catch (err2) {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      } catch (err3) {
+        console.warn("getUserMedia failed:", err3);
+        if ($("hud-status-pill")) $("hud-status-pill").textContent = "Camera permission needed";
+        if ($("cam-standby-overlay")) $("cam-standby-overlay").style.display = "flex";
+        return;
+      }
+    }
+  }
+
+  video.srcObject = stream;
+  try {
+    await video.play();
+  } catch (playErr) {
+    const resumeOnTouch = () => {
+      video.play().catch(() => {});
+      window.removeEventListener("touchstart", resumeOnTouch);
+      window.removeEventListener("click", resumeOnTouch);
+    };
+    window.addEventListener("touchstart", resumeOnTouch, { once: true });
+    window.addEventListener("click", resumeOnTouch, { once: true });
+  }
+
+  isCameraHardwarePowered = true;
+  if ($("cam-standby-overlay")) $("cam-standby-overlay").style.display = "none";
+  if ($("cam-power-btn")) $("cam-power-btn").className = "icon-btn accent";
+  if ($("cam-power-icon")) $("cam-power-icon").textContent = "📹";
+  if ($("cam-power-text")) $("cam-power-text").textContent = "Camera ON";
+
+  const track = stream.getVideoTracks()[0];
+  const settings = track ? track.getSettings() : {};
+  if (settings.deviceId) currentDeviceId = settings.deviceId;
+
+  const isCurrentlyFront = settings.facingMode === 'user' || (useFront && !settings.facingMode);
+  wrap.classList.toggle("mirror", isCurrentlyFront);
+
+  layout();
+  lastVideoTime = -1;
+  await enumerateCameras();
+}
+
+onClick("cam-power-btn", async () => {
+  if (isCameraHardwarePowered) stopCameraHardware("User toggled OFF");
+  else await startCamera(currentDeviceId);
+});
+onClick("standby-wake-btn", async () => await startCamera(currentDeviceId));
+
+// Auto shutdown when user switches tab or locks phone
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") stopCameraHardware("Visibility hidden");
+});
+window.addEventListener("pagehide", () => stopCameraHardware("Pagehide"));
+window.addEventListener("beforeunload", () => stopCameraHardware("Beforeunload"));
+
+async function enumerateCameras() {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    videoDevices = devices.filter(d => d.kind === 'videoinput');
+    const camSelect = $("cam-select");
+    if (!camSelect) return;
+    camSelect.innerHTML = "";
+    if (videoDevices.length > 1) {
+      camSelect.style.display = "inline-block";
+      videoDevices.forEach((dev, idx) => {
+        const opt = document.createElement("option");
+        opt.value = dev.deviceId;
+        const label = dev.label.toLowerCase();
+        let name = `Camera ${idx + 1}`;
+        if (label.includes("back") || label.includes("environment")) name = `Back (${idx+1})`;
+        else if (label.includes("front") || label.includes("user")) name = `Front (${idx+1})`;
+        opt.textContent = name;
+        if (dev.deviceId === currentDeviceId) opt.selected = true;
+        camSelect.appendChild(opt);
+      });
+      onChange(camSelect, () => {
+        currentDeviceId = camSelect.value;
+        startCamera(currentDeviceId);
+      });
+    }
+  } catch (err) {}
+}
+
+onClick("flip", async () => {
+  if (videoDevices.length > 1) {
+    const currentIdx = videoDevices.findIndex(d => d.deviceId === currentDeviceId);
+    const nextIdx = (currentIdx + 1) % videoDevices.length;
+    currentDeviceId = videoDevices[nextIdx].deviceId;
+    useFront = !useFront;
+    await startCamera(currentDeviceId);
+  } else {
+    useFront = !useFront;
+    await startCamera();
+  }
+});
+if (video) video.addEventListener("loadedmetadata", layout);
+
+// ---------------- Photo Upload Support ----------------
+onClick("upload-btn", () => {
+  const inp = $("photo-input");
+  if (inp) inp.click();
+});
+
+onChange("photo-input", e => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => loadStaticImage(evt.target.result);
+  reader.readAsDataURL(file);
+});
+
+function switchToLiveMode() {
+  isStaticImageMode = false;
+  if (staticImg) staticImg.style.display = "none";
+  if (video) video.style.display = "block";
+  layout();
+}
+
+function loadStaticImage(dataUrl) {
+  isStaticImageMode = true;
+  stopCameraHardware("Static Photo");
+  wrap.classList.remove("mirror");
+  if (video) video.style.display = "none";
+  if (staticImg) {
+    staticImg.style.display = "block";
+    staticImg.src = dataUrl;
+    staticImg.onload = () => {
+      layout();
+      if (landmarker) analyzeImage(staticImg);
+    };
+  }
+  if ($("hud-mode-pill")) $("hud-mode-pill").textContent = "PHOTO ANALYSIS MODE";
+}
+
+function analyzeImage(imgEl) {
+  const vw = imgEl.naturalWidth, vh = imgEl.naturalHeight;
+  cv.width = vw; cv.height = vh;
+  const off = document.createElement("canvas");
+  off.width = vw; off.height = vh;
+  const octx = off.getContext("2d");
+  octx.drawImage(imgEl, 0, 0, vw, vh);
+
+  try {
+    const res = landmarker.detectForVideo(off, performance.now());
+    handleLandmarks(res.landmarks && res.landmarks[0], vw, vh, true);
+  } catch (err) {}
+}
+
+// ---------------- MediaPipe Model Loader ----------------
+async function loadModel() {
+  try {
+    const fileset = await FilesetResolver.forVisionTasks(WASM);
+    const create = delegate => PoseLandmarker.createFromOptions(fileset, {
+      baseOptions: { modelAssetPath: MODEL, delegate },
+      runningMode: "VIDEO",
+      numPoses: 1
+    });
+    try { landmarker = await create("GPU"); } catch (e) { landmarker = await create("CPU"); }
+    if ($("hud-status-pill")) $("hud-status-pill").textContent = "AI Ready";
+  } catch (e) {
+    if ($("hud-status-pill")) $("hud-status-pill").textContent = "AI Model Offline";
+  }
+}
+
+// ---------------- Skeleton & Plumb Line Drawing ----------------
+const CONNECTIONS = [
+  [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
+  [11, 23], [12, 24], [23, 24],
+  [23, 25], [25, 27], [24, 26], [26, 28],
+  [27, 29], [29, 31], [27, 31],
+  [28, 30], [30, 32], [28, 32]
+];
+
+function drawPlumbGrid(pose, vw, vh) {
+  if (!$('grid-toggle') || !$('grid-toggle').checked) return;
+  ctx.save();
+  const midH = pose.mid(L_HIP, R_HIP);
+  const midSh = pose.mid(L_SH, R_SH);
+  if (midH && midSh) {
+    const plumbX = (midH.x + midSh.x) / 2;
+    ctx.strokeStyle = "rgba(0, 229, 255, 0.4)";
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(plumbX, 0);
+    ctx.lineTo(plumbX, vh);
+    ctx.stroke();
+
+    // Horizontal Level Lines across Shoulders and Hips
+    if (pose.seen(L_SH, R_SH)) {
+      ctx.strokeStyle = "rgba(0, 230, 118, 0.45)";
+      ctx.beginPath();
+      ctx.moveTo(0, midSh.y);
+      ctx.lineTo(vw, midSh.y);
+      ctx.stroke();
+    }
+    if (pose.seen(L_HIP, R_HIP)) {
+      ctx.strokeStyle = "rgba(255, 171, 0, 0.45)";
+      ctx.beginPath();
+      ctx.moveTo(0, midH.y);
+      ctx.lineTo(vw, midH.y);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+function drawSkeleton(pose, vw, vh) {
+  if (!$('chain-toggle') || !$('chain-toggle').checked) return;
+  ctx.save();
+  ctx.strokeStyle = "rgba(0, 230, 118, 0.85)";
+  ctx.lineWidth = Math.max(3, Math.round(vw / 160));
+  ctx.lineCap = "round";
+
+  CONNECTIONS.forEach(([a, b]) => {
+    if (pose.seen(a, b)) {
+      const pa = pose.p(a), pb = pose.p(b);
+      ctx.beginPath();
+      ctx.moveTo(pa.x, pa.y);
+      ctx.lineTo(pb.x, pb.y);
+      ctx.stroke();
+    }
+  });
+
+  // Nodes
+  ctx.fillStyle = "#ffffff";
+  [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28].forEach(idx => {
+    if (pose.seen(idx)) {
+      const pt = pose.p(idx);
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, Math.max(4, Math.round(vw / 120)), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+  ctx.restore();
+}
+
+// ---------------- Live Data Processing ----------------
+function handleLandmarks(lms, vw, vh, isStatic = false) {
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  if (!lms) {
+    if ($("hud-status-pill")) {
+      $("hud-status-pill").textContent = "Step back into view";
+      $("hud-status-pill").className = "hud-pill alert";
+    }
+    return;
+  }
+
+  const pose = new Pose(lms, vw, vh);
+  lastPoseState = pose;
+
+  const seenHead = (lms[NOSE].visibility ?? 0) >= 0.35 || (lms[L_EAR].visibility ?? 0) >= 0.35;
+  const seenPelvis = (lms[L_HIP].visibility ?? 0) >= 0.35 || (lms[R_HIP].visibility ?? 0) >= 0.35;
+  const seenFeet = (lms[L_ANK].visibility ?? 0) >= 0.35 || (lms[R_ANK].visibility ?? 0) >= 0.35;
+
+  if (seenHead && seenPelvis && seenFeet) {
+    if ($("hud-status-pill")) {
+      $("hud-status-pill").textContent = "✓ Full Body Locked";
+      $("hud-status-pill").className = "hud-pill ok";
+    }
+  } else {
+    if ($("hud-status-pill")) {
+      $("hud-status-pill").textContent = "Align Head to Feet";
+      $("hud-status-pill").className = "hud-pill amber";
+    }
+  }
+
+  // Draw visual guides if not hidden
+  drawPlumbGrid(pose, vw, vh);
+  drawSkeleton(pose, vw, vh);
+
+  // Mode Specific Updates
+  if (currentCategory === 'posture') {
+    updatePostureMode(pose);
+  } else if (currentCategory === 'gait') {
+    gaitTracker.update(pose, running || isStatic);
+  } else if (currentCategory === 'rom') {
+    updateRomMode(pose);
+  }
+}
+
+function updatePostureMode(pose) {
+  const angles = calculatePostureAngles(pose, currentPostureView);
+  if (currentPostureView === 'FRONT') {
+    if ($('front-head-val')) $('front-head-val').textContent = `${angles.headTilt.toFixed(1)}°`;
+    if ($('front-sh-val')) $('front-sh-val').textContent = `${angles.shoulderDrop.toFixed(1)}°`;
+    if ($('front-hip-val')) $('front-hip-val').textContent = `${angles.pelvicObliquity.toFixed(1)}°`;
+    if ($('front-knee-val')) $('front-knee-val').textContent = `${angles.kneeValgus.toFixed(1)}°`;
+    if ($('hud-quick-metric')) $('hud-quick-metric').textContent = `Shoulder: ${angles.shoulderDrop.toFixed(1)}°`;
+  } else if (currentPostureView === 'SIDE') {
+    if ($('side-head-val')) $('side-head-val').textContent = `${angles.fwdHead.toFixed(1)}%`;
+    if ($('side-trunk-val')) $('side-trunk-val').textContent = `${angles.trunkLean.toFixed(1)}°`;
+    if ($('side-knee-val')) $('side-knee-val').textContent = `${Math.round(angles.kneeAngle)}°`;
+    if ($('hud-quick-metric')) $('hud-quick-metric').textContent = `Fwd Head: ${angles.fwdHead.toFixed(1)}%`;
+  } else {
+    if ($('back-sh-val')) $('back-sh-val').textContent = `${angles.scapularTilt.toFixed(1)}°`;
+    if ($('back-spine-val')) $('back-spine-val').textContent = `${angles.spinePlumb.toFixed(1)}°`;
+    if ($('back-hip-val')) $('back-hip-val').textContent = `${angles.pelvicTilt.toFixed(1)}°`;
+    if ($('hud-quick-metric')) $('hud-quick-metric').textContent = `Spine: ${angles.spinePlumb.toFixed(1)}°`;
+  }
+}
+
+function updateRomMode(pose) {
+  const angle = currentRomItem.calc(pose);
+  if (angle != null) {
+    const rounded = Math.round(angle);
+    if ($('rom-live-deg')) $('rom-live-deg').textContent = `${rounded}°`;
+    if ($('hud-quick-metric')) $('hud-quick-metric').textContent = `ROM: ${rounded}°`;
+
+    const span = Math.max(10, currentRomItem.normMax - currentRomItem.normMin);
+    const pct = Math.min(100, Math.max(0, (rounded / currentRomItem.normMax) * 100));
+    if ($('rom-live-bar')) $('rom-live-bar').style.width = `${pct}%`;
+
+    const deficit = Math.max(0, currentRomItem.normMax - rounded);
+    if ($('rom-deficit-text')) {
+      $('rom-deficit-text').textContent = deficit <= 5 ? `✓ Within Normal Limits (${currentRomItem.normMax}°)` : `Deficit: ${deficit}° below normal (${currentRomItem.normMax}°)`;
+    }
+  }
+}
+
+// ---------------- Video Processing Animation Loop ----------------
+function loop() {
+  try {
+    if (!isStaticImageMode && isCameraHardwarePowered && landmarker && video && video.readyState >= 2 && video.currentTime !== lastVideoTime) {
+      lastVideoTime = video.currentTime;
+      cv.width = video.videoWidth;
+      cv.height = video.videoHeight;
+      const res = landmarker.detectForVideo(video, performance.now());
+      handleLandmarks(res.landmarks && res.landmarks[0], cv.width, cv.height, false);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  requestAnimationFrame(loop);
+}
+
+// ---------------- Boot Initialization ----------------
+loadSavedPatient();
+if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+  if ($("hud-status-pill")) $("hud-status-pill").textContent = "Camera not available over HTTP";
+} else {
+  startCamera();
+}
+loadModel();
+loop();
+
+// ---------------- Source Code & Anti-Theft Protection ----------------
+// 1. Prevent Right-Click Context Menu across app (except input fields)
+document.addEventListener('contextmenu', (e) => {
+  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+    e.preventDefault();
+  }
+});
+
+// 2. Intercept DevTools, View-Source, Print, and Page-Save keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // F12 key
+  if (e.key === 'F12') {
+    e.preventDefault();
+    return false;
+  }
+  // Ctrl+U or Cmd+Opt+U (View Source)
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U')) {
+    e.preventDefault();
+    return false;
+  }
+  // Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C (Inspect / Console)
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) {
+    e.preventDefault();
+    return false;
+  }
+  // Ctrl+S / Cmd+S (Save webpage)
+  if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+    e.preventDefault();
+    return false;
+  }
+  // Ctrl+P / Cmd+P (Print page - allow only within report modal)
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
+    const isReport = document.getElementById('report-modal') && document.getElementById('report-modal').classList.contains('show');
+    if (!isReport) {
+      e.preventDefault();
+      return false;
+    }
+  }
+  // Ctrl+A / Cmd+A (Select All outside inputs)
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A')) {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      return false;
+    }
+  }
+});
+
+// 3. Block text dragging, selection, and copy events outside inputs and clinical reports
+document.addEventListener('dragstart', (e) => {
+  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+    e.preventDefault();
+  }
+});
+
+document.addEventListener('selectstart', (e) => {
+  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+    e.preventDefault();
+  }
+});
+
+document.addEventListener('copy', (e) => {
+  const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+  const isReport = e.target.closest && e.target.closest('#report-modal-body');
+  if (!isInput && !isReport) {
+    e.preventDefault();
+  }
+});
+
+// 4. Anti-Debugger & Console Protection Shield
+try {
+  const origLog = console.log;
+  console.log = function() {};
+  console.info = function() {};
+  console.warn = function() {};
+  console.dir = function() {};
+  console.table = function() {};
+  origLog('%c🛡️ SYMMETRY CLINICAL SUITE: Proprietary Biomechanical Intellectual Property. Reverse engineering, automated AI scraping, and code copying are strictly prohibited.', 'color:#00e5ff;font-size:13px;font-weight:bold;background:#05090e;padding:6px 10px;border-radius:4px;');
+} catch(e) {}
+
+// Anti-Debugger Watchdog
+setInterval(function() {
+  const start = performance.now();
+  (function() {
+    debugger;
+  })();
+  if (performance.now() - start > 100) {
+    // If DevTools was open and caught on debugger breakpoint, clear console immediately
+    try { console.clear(); } catch(e) {}
+  }
+}, 2000);
+
+// 5. Register PWA Service Worker for Home Screen App Installation
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

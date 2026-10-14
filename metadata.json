@@ -1,0 +1,10 @@
+{
+  "name": "Symmetry - Posture & ROM Analysis",
+  "description": "Live posture and range-of-motion analysis using the phone/laptop camera and MediaPipe Pose.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
