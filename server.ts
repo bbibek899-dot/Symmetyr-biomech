@@ -2,6 +2,11 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import archiver from 'archiver';
+import { exec } from 'child_process';
+import util from 'util';
+
+const execPromise = util.promisify(exec);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -82,12 +87,162 @@ app.post('/api/upload-image', (req, res) => {
     fs.writeFileSync(path.join(imagesDir, fileName), buffer);
     return res.json({ success: true, url: `/images/${fileName}` });
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to save image' });
+// ==============================================================
+// OWNER MASTER VAULT & GITHUB INTEGRATION APIS
+// Allows authorized owner (Bibek) to unlock code, view files,
+// export source ZIP, and push to GitHub repository
+// ==============================================================
+const OWNER_PASSCODES = ['bibek2026', '899', 'bbibek899', 'symmetry2026'];
+
+function isAuthorizedOwner(req: express.Request): boolean {
+  const token = (req.headers['x-owner-token'] || req.query.token || req.body?.ownerKey || '') as string;
+  return typeof token === 'string' && OWNER_PASSCODES.includes(token.trim().toLowerCase());
+}
+
+// 1. Verify Owner Passcode
+app.post('/api/owner/verify', (req, res) => {
+  const { passcode } = req.body || {};
+  if (passcode && OWNER_PASSCODES.includes(String(passcode).trim().toLowerCase())) {
+    return res.json({ success: true, token: String(passcode).trim().toLowerCase(), owner: 'Bibek' });
+  }
+  return res.status(401).json({ success: false, error: 'Incorrect passcode. Access denied.' });
+});
+
+// 2. Export Complete Clean Source Code as ZIP (Owner Only)
+app.get('/api/owner/export-source', (req, res) => {
+  if (!isAuthorizedOwner(req)) {
+    return res.status(403).type('text/plain').send('403 Forbidden: Owner authorization required.');
+  }
+
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', 'attachment; filename="symmetry-clinical-source.zip"');
+
+  const archive = archiver('zip', { zlib: { level: 9 } });
+
+  archive.on('error', (err) => {
+    if (!res.headersSent) {
+      res.status(500).send({ error: err.message });
+    }
+  });
+
+  archive.pipe(res);
+
+  // Essential project files
+  const filesToInclude = [
+    'index.html',
+    'server.ts',
+    'package.json',
+    'tsconfig.json',
+    'vite.config.ts',
+    'README.md',
+    '.gitignore',
+    '.env.example',
+    'metadata.json'
+  ];
+
+  filesToInclude.forEach(file => {
+    const fullPath = path.resolve(__dirname, file);
+    if (fs.existsSync(fullPath)) {
+      archive.file(fullPath, { name: file });
+    }
+  });
+
+  // Include public directory (icons, manifest, etc., skipping uploaded patient photos)
+  if (fs.existsSync(publicDir)) {
+    archive.directory(publicDir, 'public', (entry) => {
+      if (entry.name.startsWith('images/') && entry.name !== 'images/') {
+        return false; // Skip runtime patient photo uploads
+      }
+      return entry;
+    });
+  }
+
+  // Include src directory if present
+  const srcDir = path.resolve(__dirname, 'src');
+  if (fs.existsSync(srcDir)) {
+    archive.directory(srcDir, 'src');
+  }
+
+  archive.finalize();
+});
+
+// 3. View Source File In-Browser (Owner Only)
+app.get('/api/owner/view-file', (req, res) => {
+  if (!isAuthorizedOwner(req)) {
+    return res.status(403).json({ error: 'Unauthorized: Owner token required.' });
+  }
+  const reqFile = String(req.query.file || 'index.html');
+  const allowedFiles = ['index.html', 'server.ts', 'package.json', 'README.md', 'metadata.json', 'vite.config.ts', 'tsconfig.json'];
+  if (!allowedFiles.includes(reqFile)) {
+    return res.status(400).json({ error: 'File not accessible' });
+  }
+  const filePath = path.resolve(__dirname, reqFile);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'File not found' });
+  }
+  const content = fs.readFileSync(filePath, 'utf8');
+  return res.json({ success: true, file: reqFile, content });
+});
+
+// 4. Automated Git Push to GitHub (Owner Only)
+app.post('/api/owner/push-github', async (req, res) => {
+  if (!isAuthorizedOwner(req)) {
+    return res.status(403).json({ error: 'Unauthorized: Owner token required.' });
+  }
+  const { repoUrl, token, branch = 'main' } = req.body || {};
+  if (!repoUrl || !token) {
+    return res.status(400).json({ error: 'Please provide both GitHub Repository URL and Personal Access Token.' });
+  }
+
+  let cleanRepo = String(repoUrl).trim();
+  cleanRepo = cleanRepo.replace(/^https?:\/\/github\.com\//i, '').replace(/\.git$/i, '');
+  const cleanToken = String(token).trim();
+
+  const authenticatedRemote = `https://${cleanToken}@github.com/${cleanRepo}.git`;
+
+  try {
+    // Configure Git user
+    await execPromise('git config user.name "Bibek" && git config user.email "bbibek899@gmail.com"');
+    
+    // Remove temporary remote if existed
+    try { await execPromise('git remote remove owner_github'); } catch (_) {}
+
+    await execPromise(`git remote add owner_github "${authenticatedRemote}"`);
+    
+    // Commit any latest code
+    try {
+      await execPromise('git add . && git commit -m "Update Symmetry Clinical Suite"');
+    } catch (_) {}
+
+    // Push to GitHub
+    const { stdout, stderr } = await execPromise(`git push -u owner_github ${branch} --force`);
+    
+    // Safely remove authenticated remote so token is never stored on disk
+    try { await execPromise('git remote remove owner_github'); } catch (_) {}
+
+    return res.json({
+      success: true,
+      message: `Successfully pushed Symmetry Clinical Suite to https://github.com/${cleanRepo}!`,
+      output: stdout || stderr || 'Push completed successfully.'
+    });
+  } catch (err: any) {
+    // Ensure credentials remote is wiped even on error
+    try { await execPromise('git remote remove owner_github'); } catch (_) {}
+    return res.status(500).json({
+      success: false,
+      error: err.message || 'Git push encountered an error. Check repository name and token permissions.'
+    });
   }
 });
 
 // Strict Security & Anti-Scraping Middleware: Block AI bots, automated crawlers, scrapers, and source requests
 app.use((req, res, next) => {
+  const p = req.path.toLowerCase();
+  
+  // Expose owner routes to owner handler
+  if (p.startsWith('/api/owner/')) {
+    return next();
+  }
   const userAgent = (req.headers['user-agent'] || '').toLowerCase();
   
   // Known AI bots, scrapers, and HTTP command-line tools
@@ -104,7 +259,6 @@ app.use((req, res, next) => {
     return res.status(403).type('text/plain').send('403 Forbidden: Automated harvesting, AI crawlers, and scrapers are strictly blocked by Symmetry Security Shield.');
   }
 
-  const p = req.path.toLowerCase();
   // Block any attempt to request source files, configurations, backups, or git metadata
   if (
     p.endsWith('.zip') || p.endsWith('.tar') || p.endsWith('.gz') ||

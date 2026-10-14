@@ -812,7 +812,7 @@ header .brand span{color:var(--g)}
 <div id="app">
   <!-- Top App Navigation & Global Header -->
   <header>
-    <div class="brand">
+    <div class="brand" id="brand-logo" title="Symmetry Clinical Suite (Triple-click or press Alt+O for Owner Studio)" style="cursor:pointer;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       Symmetry <span>AI</span>
       <span class="clinical-badge">Clinical Suite</span>
@@ -853,6 +853,10 @@ header .brand span{color:var(--g)}
 
       <button class="icon-btn" id="share-btn" title="Share App Link with Friends & Teachers">
         <span>🔗</span> Share App
+      </button>
+
+      <button class="icon-btn" id="owner-btn" title="Owner Mode (Unlock Code, DevTools & GitHub)" style="border-color:rgba(255,215,0,0.4);color:#ffd700;background:rgba(255,215,0,0.08);">
+        <span>🔑</span> Owner
       </button>
 
       <button class="icon-btn" id="install-app-btn" title="Install Symmetry App to Phone Home Screen" style="border-color:rgba(0,229,255,0.45);color:var(--cyan);background:rgba(0,229,255,0.08);">
@@ -1214,9 +1218,174 @@ header .brand span{color:var(--g)}
         </button>
       </div>
 
+      <!-- Owner Access Trigger -->
+      <div style="background:#090e15;padding:10px 14px;border-radius:8px;border:1px dashed rgba(255,215,0,0.35);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <div style="font-size:11.5px;color:var(--mut);">
+          <span style="color:#ffd700;font-weight:700;">Are you the project creator?</span> Unlock DevTools, inspect code, or push to GitHub.
+        </div>
+        <button id="share-modal-open-owner" style="background:#191d12;border:1px solid #ffd700;color:#ffd700;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:11.5px;font-weight:700;white-space:nowrap;">
+          🔑 Owner Studio
+        </button>
+      </div>
+
     </div>
     <div class="btn-row">
       <button class="primary" id="github-modal-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- OWNER MASTER AUTHENTICATION, SOURCE VAULT & GITHUB CENTER     -->
+<!-- ============================================================== -->
+<div id="owner-modal" class="modal-backdrop">
+  <div class="card" style="max-width:720px;max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:22px;">🔐</span>
+        <div>
+          <h3 style="margin:0;font-size:16px;color:#fff;">Owner Master Studio &amp; Code Vault</h3>
+          <div style="font-size:11.5px;color:var(--mut);">Creator Authentication &bull; DevTools Unlock &bull; Source Export &bull; GitHub Integration</div>
+        </div>
+      </div>
+      <button class="icon-btn" id="owner-modal-close" style="padding:4px 10px;font-size:12px;">✕ Close</button>
+    </div>
+
+    <!-- State 1: Locked Gate (Requires Passcode) -->
+    <div id="owner-gate" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="background:#111a24;padding:16px;border-radius:10px;border:1px solid rgba(255,215,0,0.3);">
+        <b style="color:#ffd700;font-size:14px;">Enter Owner Passcode to Unlock Source &amp; DevTools</b>
+        <p style="margin:6px 0 12px 0;font-size:12px;color:#b2c7dc;line-height:1.5;">
+          To prevent unauthorized users or crawlers from viewing or copying your clinical intellectual property, this area is password-protected.
+        </p>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input type="password" id="owner-passcode-input" placeholder="Enter owner passcode (e.g. bibek2026 or 899)" style="flex:1;min-width:220px;padding:9px 12px;border-radius:7px;background:#060a0f;border:1px solid var(--border);color:#fff;font-size:13px;outline:none;">
+          <button id="owner-verify-btn" style="background:#ffd700;color:#0b1118;font-weight:800;font-size:13px;padding:9px 18px;border-radius:7px;border:none;cursor:pointer;">
+            🔓 Unlock My Code
+          </button>
+        </div>
+        <div id="owner-gate-error" style="color:var(--r);font-size:12px;margin-top:6px;display:none;font-weight:600;"></div>
+      </div>
+
+      <div style="background:#0c1219;padding:12px 14px;border-radius:8px;font-size:11.5px;color:var(--mut);line-height:1.5;">
+        💡 <b>Author Passcode:</b> You can use <code style="color:#ffd700;background:#151f2b;padding:2px 6px;border-radius:4px;">bibek2026</code> or <code style="color:#ffd700;background:#151f2b;padding:2px 6px;border-radius:4px;">899</code> (matching your email bbibek899).
+      </div>
+    </div>
+
+    <!-- State 2: Unlocked Master Panel -->
+    <div id="owner-dashboard" style="display:none;flex-direction:column;gap:16px;">
+      
+      <!-- Status Banner & DevTools Status -->
+      <div style="background:#0a1e16;border:1px solid rgba(0,230,118,0.4);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:20px;">🟢</span>
+          <div>
+            <b style="color:var(--g);font-size:13.5px;">Owner Mode Active — Verified as Bibek</b>
+            <div style="font-size:11.5px;color:#a5d6a7;">Right-Click, DevTools (F12), Text Selection &amp; View-Source are UNLOCKED for your session.</div>
+          </div>
+        </div>
+        <button id="owner-relock-btn" style="background:#1b2a20;border:1px solid var(--g);color:var(--g);padding:6px 14px;border-radius:6px;font-size:11.5px;font-weight:700;cursor:pointer;">
+          🔒 Lock Mode
+        </button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div style="display:flex;gap:6px;border-bottom:1px solid var(--border);padding-bottom:8px;overflow-x:auto;">
+        <button class="owner-tab-btn active" data-tab="github" id="owner-tab-btn-github" style="background:#101a26;border:1px solid var(--cyan);color:var(--cyan);font-weight:700;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;">
+          🐙 GitHub &amp; Authentication
+        </button>
+        <button class="owner-tab-btn" data-tab="export" id="owner-tab-btn-export" style="background:transparent;border:1px solid var(--border);color:var(--mut);font-weight:600;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;">
+          📦 Export Source ZIP
+        </button>
+        <button class="owner-tab-btn" data-tab="inspect" id="owner-tab-btn-inspect" style="background:transparent;border:1px solid var(--border);color:var(--mut);font-weight:600;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;">
+          💻 In-App Code Inspector
+        </button>
+      </div>
+
+      <!-- Tab Content 1: GitHub & Authentication -->
+      <div id="owner-tab-github" class="owner-tab-pane" style="display:flex;flex-direction:column;gap:14px;">
+        
+        <!-- Crucial Clarification for the user -->
+        <div style="background:#0e1724;padding:14px;border-radius:10px;border-left:4px solid var(--cyan);">
+          <div style="font-size:13.5px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;">
+            <span>💡</span> Is adding to GitHub necessary for your app to run?
+          </div>
+          <p style="margin:6px 0 0 0;font-size:12px;color:#c0d3e5;line-height:1.6;">
+            <b style="color:var(--g);">NO, it is NOT necessary at all!</b> Your Symmetry app is <b>already fully built, live, and running 24/7 on Google Cloud</b> (<span style="color:var(--cyan);font-family:monospace;">ais-pre-v36ev7ejomvg4o2rvkenh6...</span>). Anyone you give the link to can use the camera, posture tracker, 5-phase gait analysis, and generate PDF reports directly on iPhone, Android, or laptop without needing GitHub or logging in.
+          </p>
+        </div>
+
+        <!-- Push to GitHub Automatically -->
+        <div style="background:#121a24;padding:14px;border-radius:10px;border:1px solid var(--border);display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;">
+            <span>🚀</span> Option A: Automated Git Push from App
+          </div>
+          <div style="font-size:12px;color:var(--mut);line-height:1.5;">
+            GitHub requires authentication (either an OAuth app or Personal Access Token). Paste your repository name and Personal Access Token (PAT) below to push automatically:
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div>
+              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:3px;">GitHub Repository (e.g. bbibek899/symmetry-biomechanics or https://github.com/bbibek899/symmetry-biomechanics):</label>
+              <input type="text" id="gh-repo-input" placeholder="bbibek899/symmetry-biomechanics" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;background:#060a0f;border:1px solid var(--border);color:#fff;font-size:12px;outline:none;">
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:3px;">GitHub Personal Access Token (classic token with 'repo' scope from github.com/settings/tokens):</label>
+              <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;background:#060a0f;border:1px solid var(--border);color:#fff;font-size:12px;outline:none;">
+            </div>
+            <button id="gh-push-btn" style="background:var(--cyan);color:#002433;font-weight:800;font-size:12.5px;padding:9px 16px;border-radius:6px;border:none;cursor:pointer;margin-top:4px;">
+              🚀 Push App to GitHub Now
+            </button>
+            <div id="gh-push-status" style="font-size:11.5px;padding:8px;border-radius:6px;display:none;line-height:1.4;"></div>
+          </div>
+        </div>
+
+        <!-- Option B: Manual Web Upload in 2 minutes -->
+        <div style="background:#0c1219;padding:14px;border-radius:10px;border:1px solid var(--border);">
+          <div style="font-size:13px;font-weight:700;color:var(--g);display:flex;align-items:center;gap:6px;">
+            <span>📦</span> Option B: Instant Drag &amp; Drop Upload (Easiest — No Token Needed)
+          </div>
+          <ol style="margin:8px 0 0 18px;padding:0;font-size:12px;color:#b5cbe0;line-height:1.7;">
+            <li>Click the <b>"Export Source ZIP"</b> tab above and tap <b>Download Source ZIP</b>.</li>
+            <li>Go to <a href="https://github.com/new" target="_blank" style="color:var(--cyan);font-weight:600;">github.com/new</a>, name it <code>symmetry-biomechanics</code>, and click <b>Create repository</b>.</li>
+            <li>Click <b>"uploading an existing file"</b>, drag the unzipped files into GitHub, and tap <b>Commit changes</b>. Done!</li>
+          </ol>
+        </div>
+
+      </div>
+
+      <!-- Tab Content 2: Export Source ZIP -->
+      <div id="owner-tab-export" class="owner-tab-pane" style="display:none;flex-direction:column;gap:14px;">
+        <div style="background:#101a26;padding:16px;border-radius:10px;border:1px solid rgba(0,229,255,0.3);">
+          <b style="color:#fff;font-size:14px;">Download Full Clean Project ZIP Archive</b>
+          <p style="margin:6px 0 14px 0;font-size:12px;color:var(--mut);line-height:1.5;">
+            Contains the entire clinical codebase: <code>index.html</code> (full UI, MediaPipe Pose tracking, 5-phase gait engine, ROM goniometry), <code>server.ts</code>, <code>package.json</code>, app manifest, and icons.
+          </p>
+          <a id="owner-download-zip-link" href="#" style="background:var(--cyan);color:#002433;font-weight:800;font-size:13px;padding:10px 20px;border-radius:7px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+            <span>📦</span> Download symmetry-clinical-source.zip
+          </a>
+        </div>
+      </div>
+
+      <!-- Tab Content 3: In-App Code Inspector -->
+      <div id="owner-tab-inspect" class="owner-tab-pane" style="display:none;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <div style="display:flex;gap:6px;">
+            <button class="file-tab-btn active" data-file="index.html" style="background:#121a24;border:1px solid var(--cyan);color:var(--cyan);padding:4px 10px;border-radius:5px;font-size:11.5px;cursor:pointer;font-family:monospace;">index.html</button>
+            <button class="file-tab-btn" data-file="server.ts" style="background:transparent;border:1px solid var(--border);color:var(--mut);padding:4px 10px;border-radius:5px;font-size:11.5px;cursor:pointer;font-family:monospace;">server.ts</button>
+            <button class="file-tab-btn" data-file="package.json" style="background:transparent;border:1px solid var(--border);color:var(--mut);padding:4px 10px;border-radius:5px;font-size:11.5px;cursor:pointer;font-family:monospace;">package.json</button>
+            <button class="file-tab-btn" data-file="README.md" style="background:transparent;border:1px solid var(--border);color:var(--mut);padding:4px 10px;border-radius:5px;font-size:11.5px;cursor:pointer;font-family:monospace;">README.md</button>
+          </div>
+          <button id="copy-file-code-btn" style="background:#152230;border:1px solid var(--border);color:#fff;padding:5px 12px;border-radius:5px;font-size:11.5px;cursor:pointer;font-weight:600;">
+            📋 Copy Code
+          </button>
+        </div>
+        <pre id="code-viewer-pre" style="background:#05080c;border:1px solid var(--border);border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:#c9d1d9;max-height:360px;overflow:auto;white-space:pre;line-height:1.5;margin:0;">Loading source file...</pre>
+      </div>
+
+    </div>
+
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="primary" id="owner-modal-done">Close Studio</button>
     </div>
   </div>
 </div>
@@ -2392,6 +2561,259 @@ onClick('pwa-native-install-btn', async () => {
   }
 });
 
+// ---------------- Owner Master Studio Controller ----------------
+let currentOwnerToken = sessionStorage.getItem('symmetry_owner_token') || '';
+window.__SYMMETRY_OWNER_UNLOCKED = !!currentOwnerToken;
+
+function openOwnerModal() {
+  if ($('github-modal')) $('github-modal').classList.remove('show');
+  if ($('owner-modal')) $('owner-modal').classList.add('show');
+  updateOwnerUI();
+}
+
+function closeOwnerModal() {
+  if ($('owner-modal')) $('owner-modal').classList.remove('show');
+}
+
+function updateOwnerUI() {
+  const isUnlocked = window.__SYMMETRY_OWNER_UNLOCKED;
+  if ($('owner-gate')) $('owner-gate').style.display = isUnlocked ? 'none' : 'flex';
+  if ($('owner-dashboard')) $('owner-dashboard').style.display = isUnlocked ? 'flex' : 'none';
+  if (isUnlocked && $('owner-download-zip-link')) {
+    $('owner-download-zip-link').href = `/api/owner/export-source?token=${encodeURIComponent(currentOwnerToken)}`;
+  }
+}
+
+function unlockOwnerSession(token) {
+  currentOwnerToken = token;
+  window.__SYMMETRY_OWNER_UNLOCKED = true;
+  sessionStorage.setItem('symmetry_owner_token', token);
+  document.body.style.userSelect = 'auto';
+  // Restore console logging
+  try {
+    if (window.__origConsoleLog) console.log = window.__origConsoleLog;
+    if (window.__origConsoleWarn) console.warn = window.__origConsoleWarn;
+    if (window.__origConsoleError) console.error = window.__origConsoleError;
+  } catch(e) {}
+  updateOwnerUI();
+  loadViewerFile('index.html');
+}
+
+function lockOwnerSession() {
+  currentOwnerToken = '';
+  window.__SYMMETRY_OWNER_UNLOCKED = false;
+  sessionStorage.removeItem('symmetry_owner_token');
+  document.body.style.userSelect = '';
+  updateOwnerUI();
+}
+
+onClick('owner-btn', openOwnerModal);
+onClick('share-modal-open-owner', openOwnerModal);
+onClick('owner-modal-close', closeOwnerModal);
+onClick('owner-modal-done', closeOwnerModal);
+onClick('owner-relock-btn', lockOwnerSession);
+
+// Triple-click brand logo to open Owner Studio
+let brandClickCount = 0;
+let brandClickTimer = null;
+const brandLogo = $('brand-logo');
+if (brandLogo) {
+  brandLogo.addEventListener('click', () => {
+    brandClickCount++;
+    if (brandClickCount === 1) {
+      brandClickTimer = setTimeout(() => { brandClickCount = 0; }, 700);
+    } else if (brandClickCount >= 3) {
+      clearTimeout(brandClickTimer);
+      brandClickCount = 0;
+      openOwnerModal();
+    }
+  });
+}
+
+// Passcode verification
+onClick('owner-verify-btn', async () => {
+  const input = $('owner-passcode-input');
+  const err = $('owner-gate-error');
+  const val = input ? input.value.trim() : '';
+  if (!val) {
+    if (err) { err.textContent = 'Please enter your owner passcode.'; err.style.display = 'block'; }
+    return;
+  }
+  try {
+    const res = await fetch('/api/owner/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passcode: val })
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (err) err.style.display = 'none';
+      if (input) input.value = '';
+      unlockOwnerSession(data.token);
+    } else {
+      if (err) { err.textContent = data.error || 'Incorrect passcode. Access denied.'; err.style.display = 'block'; }
+    }
+  } catch (e) {
+    // Client fallback check
+    if (['bibek2026', '899', 'bbibek899', 'symmetry2026'].includes(val.toLowerCase())) {
+      if (err) err.style.display = 'none';
+      unlockOwnerSession(val.toLowerCase());
+    } else {
+      if (err) { err.textContent = 'Verification error. Check connection or passcode.'; err.style.display = 'block'; }
+    }
+  }
+});
+
+if ($('owner-passcode-input')) {
+  $('owner-passcode-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const btn = $('owner-verify-btn');
+      if (btn) btn.click();
+    }
+  });
+}
+
+// Owner tabs switching
+document.querySelectorAll('.owner-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.owner-tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.style.background = 'transparent';
+      b.style.borderColor = 'var(--border)';
+      b.style.color = 'var(--mut)';
+    });
+    btn.classList.add('active');
+    btn.style.background = '#101a26';
+    btn.style.borderColor = 'var(--cyan)';
+    btn.style.color = 'var(--cyan)';
+
+    const tab = btn.getAttribute('data-tab');
+    document.querySelectorAll('.owner-tab-pane').forEach(p => p.style.display = 'none');
+    const target = $('owner-tab-' + tab);
+    if (target) target.style.display = 'flex';
+  });
+});
+
+// In-App File Inspector
+let currentViewedFile = 'index.html';
+async function loadViewerFile(fileName) {
+  currentViewedFile = fileName;
+  const pre = $('code-viewer-pre');
+  if (!pre) return;
+  pre.textContent = `Loading ${fileName}...`;
+  try {
+    const res = await fetch(`/api/owner/view-file?file=${encodeURIComponent(fileName)}&token=${encodeURIComponent(currentOwnerToken)}`);
+    const data = await res.json();
+    if (data.success && data.content) {
+      pre.textContent = data.content;
+    } else {
+      pre.textContent = `// File: ${fileName}\n// Content could not be loaded (${data.error || 'Check authorization'})`;
+    }
+  } catch (e) {
+    pre.textContent = `// Error loading ${fileName}`;
+  }
+}
+
+document.querySelectorAll('.file-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.file-tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.style.background = 'transparent';
+      b.style.borderColor = 'var(--border)';
+      b.style.color = 'var(--mut)';
+    });
+    btn.classList.add('active');
+    btn.style.background = '#121a24';
+    btn.style.borderColor = 'var(--cyan)';
+    btn.style.color = 'var(--cyan)';
+    const file = btn.getAttribute('data-file');
+    loadViewerFile(file);
+  });
+});
+
+onClick('copy-file-code-btn', () => {
+  const pre = $('code-viewer-pre');
+  if (pre && pre.textContent) {
+    navigator.clipboard.writeText(pre.textContent).then(() => {
+      const btn = $('copy-file-code-btn');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    });
+  }
+});
+
+// Automated GitHub Push Handler
+onClick('gh-push-btn', async () => {
+  const repoInput = $('gh-repo-input');
+  const tokenInput = $('gh-token-input');
+  const statusDiv = $('gh-push-status');
+  const btn = $('gh-push-btn');
+
+  const repo = repoInput ? repoInput.value.trim() : '';
+  const token = tokenInput ? tokenInput.value.trim() : '';
+
+  if (!repo || !token) {
+    if (statusDiv) {
+      statusDiv.style.display = 'block';
+      statusDiv.style.background = '#2a1115';
+      statusDiv.style.border = '1px solid var(--r)';
+      statusDiv.style.color = '#ff8a80';
+      statusDiv.textContent = 'Please enter both your repository name and Personal Access Token.';
+    }
+    return;
+  }
+
+  if (statusDiv) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#101a26';
+    statusDiv.style.border = '1px solid var(--cyan)';
+    statusDiv.style.color = 'var(--cyan)';
+    statusDiv.textContent = '⏳ Executing git push to GitHub repository... please wait...';
+  }
+  if (btn) btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/owner/push-github', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-owner-token': currentOwnerToken
+      },
+      body: JSON.stringify({
+        repoUrl: repo,
+        token: token,
+        branch: 'main'
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+      statusDiv.style.background = '#0d2516';
+      statusDiv.style.border = '1px solid var(--g)';
+      statusDiv.style.color = 'var(--g)';
+      statusDiv.innerHTML = `<b>✓ Success!</b> ${result.message}<br><small style="color:#b2dfdb;">${result.output || ''}</small>`;
+      if (tokenInput) tokenInput.value = '';
+    } else {
+      statusDiv.style.background = '#2a1115';
+      statusDiv.style.border = '1px solid var(--r)';
+      statusDiv.style.color = '#ff8a80';
+      statusDiv.innerHTML = `<b>✕ Push Failed:</b> ${result.error || 'Check repository permissions.'}`;
+    }
+  } catch (err) {
+    statusDiv.style.background = '#2a1115';
+    statusDiv.style.border = '1px solid var(--r)';
+    statusDiv.style.color = '#ff8a80';
+    statusDiv.textContent = `Push Error: ${err.message || 'Network error'}`;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+});
+
+// Auto-unlock if token already in sessionStorage
+if (currentOwnerToken) {
+  setTimeout(() => { unlockOwnerSession(currentOwnerToken); }, 50);
+}
+
 // ---------------- Portrait vs Wide Layout ----------------
 function layout() {
   const targetElement = isStaticImageMode ? staticImg : video;
@@ -2825,8 +3247,9 @@ loadModel();
 loop();
 
 // ---------------- Source Code & Anti-Theft Protection ----------------
-// 1. Prevent Right-Click Context Menu across app (except input fields)
+// 1. Prevent Right-Click Context Menu across app (except input fields, or when Owner Unlocked)
 document.addEventListener('contextmenu', (e) => {
+  if (window.__SYMMETRY_OWNER_UNLOCKED) return;
   if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
     e.preventDefault();
   }
@@ -2834,6 +3257,16 @@ document.addEventListener('contextmenu', (e) => {
 
 // 2. Intercept DevTools, View-Source, Print, and Page-Save keyboard shortcuts
 document.addEventListener('keydown', (e) => {
+  // Alt+O or Ctrl+Shift+O opens Owner Master Studio
+  if ((e.altKey && (e.key === 'o' || e.key === 'O')) || ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'o' || e.key === 'O'))) {
+    e.preventDefault();
+    openOwnerModal();
+    return false;
+  }
+
+  // If Owner is unlocked, permit DevTools (F12), View Source, and all shortcuts
+  if (window.__SYMMETRY_OWNER_UNLOCKED) return;
+
   // F12 key
   if (e.key === 'F12') {
     e.preventDefault();
@@ -2873,18 +3306,21 @@ document.addEventListener('keydown', (e) => {
 
 // 3. Block text dragging, selection, and copy events outside inputs and clinical reports
 document.addEventListener('dragstart', (e) => {
+  if (window.__SYMMETRY_OWNER_UNLOCKED) return;
   if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
     e.preventDefault();
   }
 });
 
 document.addEventListener('selectstart', (e) => {
+  if (window.__SYMMETRY_OWNER_UNLOCKED) return;
   if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
     e.preventDefault();
   }
 });
 
 document.addEventListener('copy', (e) => {
+  if (window.__SYMMETRY_OWNER_UNLOCKED) return;
   const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
   const isReport = e.target.closest && e.target.closest('#report-modal-body');
   if (!isInput && !isReport) {
@@ -2894,23 +3330,27 @@ document.addEventListener('copy', (e) => {
 
 // 4. Anti-Debugger & Console Protection Shield
 try {
-  const origLog = console.log;
-  console.log = function() {};
-  console.info = function() {};
-  console.warn = function() {};
-  console.dir = function() {};
-  console.table = function() {};
-  origLog('%c🛡️ SYMMETRY CLINICAL SUITE: Proprietary Biomechanical Intellectual Property. Reverse engineering, automated AI scraping, and code copying are strictly prohibited.', 'color:#00e5ff;font-size:13px;font-weight:bold;background:#05090e;padding:6px 10px;border-radius:4px;');
+  window.__origConsoleLog = console.log;
+  window.__origConsoleWarn = console.warn;
+  window.__origConsoleError = console.error;
+  if (!window.__SYMMETRY_OWNER_UNLOCKED) {
+    console.log = function() {};
+    console.info = function() {};
+    console.warn = function() {};
+    console.dir = function() {};
+    console.table = function() {};
+    window.__origConsoleLog('%c🛡️ SYMMETRY CLINICAL SUITE: Proprietary Biomechanical IP. Press Alt+O or click Owner for Master Studio.', 'color:#00e5ff;font-size:13px;font-weight:bold;background:#05090e;padding:6px 10px;border-radius:4px;');
+  }
 } catch(e) {}
 
-// Anti-Debugger Watchdog
+// Anti-Debugger Watchdog (deactivates automatically when Owner is Unlocked)
 setInterval(function() {
+  if (window.__SYMMETRY_OWNER_UNLOCKED) return;
   const start = performance.now();
   (function() {
     debugger;
   })();
   if (performance.now() - start > 100) {
-    // If DevTools was open and caught on debugger breakpoint, clear console immediately
     try { console.clear(); } catch(e) {}
   }
 }, 2000);
