@@ -2,10 +2,12 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import archiver from 'archiver';
+import { createRequire } from 'module';
 import { exec } from 'child_process';
 import util from 'util';
 
+const require = createRequire(import.meta.url);
+const archiver = require('archiver');
 const execPromise = util.promisify(exec);
 
 const __filename = fileURLToPath(import.meta.url);
@@ -87,6 +89,10 @@ app.post('/api/upload-image', (req, res) => {
     fs.writeFileSync(path.join(imagesDir, fileName), buffer);
     return res.json({ success: true, url: `/images/${fileName}` });
   } catch (err) {
+    return res.status(500).json({ error: 'Failed to save image' });
+  }
+});
+
 // ==============================================================
 // OWNER MASTER VAULT & GITHUB INTEGRATION APIS
 // Allows authorized owner (Bibek) to unlock code, view files,
@@ -235,22 +241,31 @@ app.post('/api/owner/push-github', async (req, res) => {
   }
 });
 
+// Health check endpoints for Cloud Run deployment & container probes
+app.get(['/healthz', '/_ah/health', '/ping'], (req, res) => {
+  return res.status(200).type('text/plain').send('OK');
+});
+
 // Strict Security & Anti-Scraping Middleware: Block AI bots, automated crawlers, scrapers, and source requests
 app.use((req, res, next) => {
   const p = req.path.toLowerCase();
   
-  // Expose owner routes to owner handler
-  if (p.startsWith('/api/owner/')) {
+  // Expose owner routes and health checks
+  if (p.startsWith('/api/owner/') || p === '/healthz' || p === '/_ah/health' || p === '/ping') {
     return next();
   }
   const userAgent = (req.headers['user-agent'] || '').toLowerCase();
+
+  // Allow Google Cloud health checks
+  if (userAgent.includes('googlehc') || userAgent.includes('health')) {
+    return next();
+  }
   
-  // Known AI bots, scrapers, and HTTP command-line tools
+  // Known AI scraper bots, commercial harvesters, and scraper frameworks
   const blockedAgents = [
     'claudebot', 'claude-web', 'anthropic', 'gptbot', 'chatgpt-user',
-    'perplexitybot', 'ccbot', 'bytespider', 'scrapy', 'curl', 'wget',
-    'python-requests', 'aiohttp', 'headlesschrome', 'phantomjs', 'postmanruntime',
-    'puppeteer', 'playwright', 'axios', 'go-http-client', 'httpclient',
+    'perplexitybot', 'ccbot', 'bytespider', 'scrapy', 'headlesschrome',
+    'phantomjs', 'postmanruntime', 'puppeteer', 'playwright',
     'facebookexternalhit', 'petalbot', 'semrushbot', 'ahrefsbot'
   ];
 
